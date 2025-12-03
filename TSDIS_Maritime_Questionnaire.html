@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TSDIS – Maritime Division Consultation Questionnaire</title>
+</head>
+<body>
+  <h1>Transport Sector Database and Information System (TSDIS)</h1>
+  <h2>Maritime Division – Consultation Questionnaire</h2>
+
+  <p>
+    <strong>Purpose:</strong> This questionnaire will help us understand the Maritime Division's
+    current data collection processes, existing database systems, challenges, and requirements for TSDIS.
+    Your input is essential to ensure TSDIS meets your needs and integrates effectively with existing systems.
+  </p>
+  <p><strong>Estimated Time:</strong> 75–90 minutes</p>
+  <p><strong>Instructions:</strong> Please answer as completely as possible. If you're unsure about any
+     question, write "Need to investigate" and we can follow up.</p>
+
+  <form>
+
+    <!-- CONTACT INFORMATION -->
+    <fieldset>
+      <legend>Contact Information</legend>
+
+      <label for="name">Name:</label><br>
+      <input type="text" id="name" name="name"><br><br>
+
+      <label for="position">Position:</label><br>
+      <input type="text" id="position" name="position"><br><br>
+
+      <label for="email">Email:</label><br>
+      <input type="email" id="email" name="email"><br><br>
+
+      <label for="phone">Phone:</label><br>
+      <input type="text" id="phone" name="phone"><br><br>
+
+      <label for="date_completed">Date completed:</label><br>
+      <input type="date" id="date_completed" name="date_completed"><br><br>
+    </fieldset>
+
+    <!-- PART 1: ROLE & MANDATE -->
+    <fieldset>
+      <legend>Part 1: Maritime Division Role & Mandate</legend>
+
+      <h3>1.1 Organizational Overview</h3>
+
+      <label for="mandate">
+        1. Please describe the Maritime Division's primary mandate and responsibilities within DoT:
+      </label><br>
+      <textarea id="mandate" name="mandate" rows="4" cols="80"></textarea><br><br>
+
+      <label for="relationships">
+        2. What is the Maritime Division's relationship with other maritime sector agencies
+        (NMSA, PNG Ports, etc.)?
+      </label><br>
+      <textarea id="relationships" name="relationships" rows="4" cols="80"></textarea><br><br>
+
+      <p>3. What are the 3–5 most critical performance indicators you track for the maritime sector?</p>
+      <label>Indicator 1:</label><br>
+      <input type="text" name="kpi1"><br>
+      <label>Indicator 2:</label><br>
+      <input type="text" name="kpi2"><br>
+      <label>Indicator 3:</label><br>
+      <input type="text" name="kpi3"><br>
+      <label>Indicator 4:</label><br>
+      <input type="text" name="kpi4"><br>
+      <label>Indicator 5:</label><br>
+      <input type="text" name="kpi5"><br><br>
+
+      <label for="stakeholders">
+        4. Who are your primary stakeholders for reporting?
+      </label><br>
+      <textarea id="stakeholders" name="stakeholders" rows="3" cols="80"></textarea><br><br>
+
+      <h3>1.2 Reporting Obligations</h3>
+      <p>5. What are your main regular reports?</p>
+      <table border="1" cellpadding="4" cellspacing="0">
+        <tr>
+          <th>Report Name</th>
+          <th>Frequency</th>
+          <th>Audience</th>
+          <th>Deadline</th>
+        </tr>
+        <tr>
+          <td><input type="text" name="report1_name"></td>
+          <td><input type="text" name="report1_frequency"></td>
+          <td><input type="text" name="report1_audience"></td>
+          <td><input type="text" name="report1_deadline"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="report2_name"></td>
+          <td><input type="text" name="report2_frequency"></td>
+          <td><input type="text" name="report2_audience"></td>
+          <td><input type="text" name="report2_deadline"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="report3_name"></td>
+          <td><input type="text" name="report3_frequency"></td>
+          <td><input type="text" name="report3_audience"></td>
+          <td><input type="text" name="report3_deadline"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="report4_name"></td>
+          <td><input type="text" name="report4_frequency"></td>
+          <td><input type="text" name="report4_audience"></td>
+          <td><input type="text" name="report4_deadline"></td>
+        </tr>
+      </table>
+      <br>
+    </fieldset>
+
+    <!-- PART 2: CURRENT DATA COLLECTION -->
+    <fieldset>
+      <legend>Part 2: Current Data Collection Processes</legend>
+
+      <h3>2.1 Maritime Data Management</h3>
+      <p>6. What types of maritime data does the Division collect and manage? (Tick all that apply)</p>
+      <label><input type="checkbox" name="data_types" value="vessel_registration"> Vessel registration/licensing data</label><br>
+      <label><input type="checkbox" name="data_types" value="port_traffic"> Port traffic/cargo statistics</label><br>
+      <label><input type="checkbox" name="data_types" value="incidents"> Maritime incident/accident records</label><br>
+      <label><input type="checkbox" name="data_types" value="seafarers"> Seafarer certification/licensing</label><br>
+      <label><input type="checkbox" name="data_types" value="regulatory"> Maritime policy/regulatory compliance</label><br>
+      <label><input type="checkbox" name="data_types" value="infrastructure"> Port infrastructure data</label><br>
+      <label><input type="checkbox" name="data_types" value="routes"> Shipping route/frequency data</label><br>
+      <label>
+        <input type="checkbox" name="data_types" value="other">
+        Other:
+        <input type="text" name="data_types_other">
+      </label><br><br>
+
+      <h3>2.2 Data Collection Methods</h3>
+      <p>7. How is data currently collected and submitted? (Tick all that apply)</p>
+      <label><input type="checkbox" name="collection_methods" value="email"> Email (Word/PDF/Excel documents)</label><br>
+      <label><input type="checkbox" name="collection_methods" value="physical"> Physical documents/forms</label><br>
+      <label><input type="checkbox" name="collection_methods" value="online"> Online portal/system</label><br>
+      <label><input type="checkbox" name="collection_methods" value="direct_db"> Direct database entry</label><br>
+      <label>
+        <input type="checkbox" name="collection_methods" value="other">
+        Other:
+        <input type="text" name="collection_methods_other">
+      </label><br><br>
+
+      <h3>2.3 Time Breakdown</h3>
+      <p>8. How long does it typically take from requesting data to producing final reports?</p>
+      <label>Total time (days/weeks):</label><br>
+      <input type="text" name="total_time"><br><br>
+
+      <label>Waiting for data submissions:</label><br>
+      <input type="text" name="time_waiting"><br><br>
+
+      <label>Chasing late submissions:</label><br>
+      <input type="text" name="time_chasing"><br><br>
+
+      <label>Data cleaning/formatting:</label><br>
+      <input type="text" name="time_cleaning"><br><br>
+
+      <label>Data verification:</label><br>
+      <input type="text" name="time_verification"><br><br>
+
+      <label>Analysis:</label><br>
+      <input type="text" name="time_analysis"><br><br>
+
+      <label>Report writing:</label><br>
+      <input type="text" name="time_reporting"><br><br>
+    </fieldset>
+
+    <!-- PART 3: CHALLENGES -->
+    <fieldset>
+      <legend>Part 3: Current Challenges & Pain Points</legend>
+
+      <h3>3.1 Top Frustrations</h3>
+      <p>9. What are your THREE biggest frustrations with the current data management process?</p>
+      <label>Frustration 1:</label><br>
+      <textarea name="frustration1" rows="2" cols="80"></textarea><br>
+      <label>Frustration 2:</label><br>
+      <textarea name="frustration2" rows="2" cols="80"></textarea><br>
+      <label>Frustration 3:</label><br>
+      <textarea name="frustration3" rows="2" cols="80"></textarea><br><br>
+
+      <h3>3.2 Impact of Challenges</h3>
+      <label>Time wasted on manual processes:</label><br>
+      <textarea name="impact_time" rows="2" cols="80"></textarea><br><br>
+
+      <label>Delayed reporting:</label><br>
+      <textarea name="impact_delays" rows="2" cols="80"></textarea><br><br>
+
+      <label>Data quality issues:</label><br>
+      <textarea name="impact_quality" rows="2" cols="80"></textarea><br><br>
+
+      <label>Analysis you CAN'T do:</label><br>
+      <textarea name="impact_analysis" rows="2" cols="80"></textarea><br><br>
+    </fieldset>
+
+    <!-- PART 4: WISH LIST -->
+    <fieldset>
+      <legend>Part 4: What You Wish You Could Do</legend>
+
+      <label>
+        10. What analysis would you LOVE to do but currently cannot?
+      </label><br>
+      <textarea name="wish_analysis" rows="4" cols="80"></textarea><br><br>
+
+      <label>
+        11. If you could automate ONE thing, what would have the biggest impact?
+      </label><br>
+      <textarea name="wish_automation" rows="4" cols="80"></textarea><br><br>
+    </fieldset>
+
+    <!-- PART 5A: TECHNICAL ENVIRONMENT -->
+    <fieldset>
+      <legend>Part 5A: Technical Environment & Systems (General)</legend>
+
+      <h3>5A.1 Current Software & Tools</h3>
+      <p>12. What software tools does the Maritime Division currently use? (Tick all that apply)</p>
+      <label><input type="checkbox" name="software" value="excel"> Microsoft Excel</label>
+      Version: <input type="text" name="excel_version"><br>
+      <label><input type="checkbox" name="software" value="access"> Microsoft Access or other database</label><br>
+      <label>
+        <input type="checkbox" name="software" value="maritime_specific">
+        Maritime-specific software:
+        <input type="text" name="maritime_software">
+      </label><br>
+      <label>
+        <input type="checkbox" name="software" value="gis">
+        GIS/mapping software:
+        <input type="text" name="gis_software">
+      </label><br>
+      <label><input type="checkbox" name="software" value="bi"> Business intelligence tools (Power BI, Tableau, etc.)</label><br>
+      <label>
+        <input type="checkbox" name="software" value="other">
+        Other:
+        <input type="text" name="software_other">
+      </label><br><br>
+
+      <h3>5A.2 Data Storage</h3>
+      <p>13. Where is Maritime Division data currently stored? (Tick all that apply)</p>
+      <label><input type="checkbox" name="storage" value="laptops"> Individual staff computers/laptops</label><br>
+      <label><input type="checkbox" name="storage" value="shared_drives"> DoT network shared drives</label><br>
+      <label><input type="checkbox" name="storage" value="dot_server"> DoT server/database</label><br>
+      <label>
+        <input type="checkbox" name="storage" value="cloud">
+        Cloud storage:
+        <input type="text" name="cloud_storage">
+      </label><br>
+      <label><input type="checkbox" name="storage" value="physical"> Physical files/cabinets</label><br><br>
+
+      <h3>5A.3 Infrastructure</h3>
+      <label>Internet connectivity (Speed/Reliability):</label><br>
+      <textarea name="infra_internet" rows="2" cols="80"></textarea><br><br>
+
+      <label>Number of computers/laptops:</label><br>
+      <input type="text" name="infra_computers"><br><br>
+
+      <label>IT support available:</label><br>
+      <textarea name="infra_support" rows="2" cols="80"></textarea><br><br>
+
+      <label>Staff technical skill level (High/Medium/Low):</label><br>
+      <input type="text" name="infra_skill"><br><br>
+    </fieldset>
+
+    <!-- PART 5B: JICA DBMS -->
+    <fieldset>
+      <legend>Part 5B: Existing Database Systems Assessment (JICA DBMS)</legend>
+
+      <h3>5B.1 JICA DBMS Overview</h3>
+      <label>14. What is the official name/title of the JICA-installed database system?</label><br>
+      <input type="text" name="jica_name"><br><br>
+
+      <label>15. When was the JICA DBMS installed? (Year/Month if known)</label><br>
+      <input type="text" name="jica_install_date"><br><br>
+
+      <label>16. What is the primary purpose and scope of the JICA DBMS? What data does it manage?</label><br>
+      <textarea name="jica_purpose" rows="4" cols="80"></textarea><br><br>
+
+      <p>17. Is there any documentation available for the JICA DBMS?</p>
+      <label><input type="radio" name="jica_docs" value="yes_full"> Yes - comprehensive documentation available</label><br>
+      <label><input type="radio" name="jica_docs" value="yes_partial"> Yes - partial documentation available</label><br>
+      <label><input type="radio" name="jica_docs" value="no"> No documentation available</label><br>
+      <label><input type="radio" name="jica_docs" value="unsure"> Unsure - need to investigate</label><br><br>
+
+      <label>If yes, describe what documentation exists and where it is located:</label><br>
+      <textarea name="jica_docs_description" rows="3" cols="80"></textarea><br><br>
+
+      <h3>5B.2 Technical Architecture</h3>
+      <p>18. What database platform/technology does the JICA DBMS use?</p>
+      <label><input type="radio" name="jica_db_tech" value="sqlserver"> Microsoft SQL Server</label><br>
+      <label><input type="radio" name="jica_db_tech" value="mysql"> MySQL</label><br>
+      <label><input type="radio" name="jica_db_tech" value="postgresql"> PostgreSQL</label><br>
+      <label><input type="radio" name="jica_db_tech" value="oracle"> Oracle</label><br>
+      <label><input type="radio" name="jica_db_tech" value="access"> Microsoft Access</label><br>
+      <label>
+        <input type="radio" name="jica_db_tech" value="other">
+        Other:
+        <input type="text" name="jica_db_tech_other">
+      </label><br>
+      <label><input type="radio" name="jica_db_tech" value="unknown"> Unknown - need to investigate</label><br><br>
+
+      <p>19. Is the JICA DBMS remotely accessible?</p>
+      <label><input type="radio" name="jica_remote" value="internet_vpn"> Yes - accessible via internet/VPN</label><br>
+      <label><input type="radio" name="jica_remote" value="dot_only"> Yes - accessible within DoT network only</label><br>
+      <label><input type="radio" name="jica_remote" value="local_only"> No - local access only</label><br>
+      <label><input type="radio" name="jica_remote" value="unknown"> Unknown - need to investigate</label><br><br>
+
+      <label>If remotely accessible, describe how (web interface, VPN, remote desktop, etc.):</label><br>
+      <textarea name="jica_remote_how" rows="3" cols="80"></textarea><br><br>
+
+      <p>20. Is the JICA DBMS connected to the DoT domain network, or is it on an isolated/standalone network?</p>
+      <label><input type="radio" name="jica_network" value="dot_domain"> Connected to DoT domain network</label><br>
+      <label><input type="radio" name="jica_network" value="isolated"> Isolated network within Maritime Division only</label><br>
+      <label><input type="radio" name="jica_network" value="standalone"> Standalone system (not networked)</label><br>
+      <label><input type="radio" name="jica_network" value="unknown"> Unknown - need to investigate</label><br><br>
+
+      <label>Please describe the network configuration:</label><br>
+      <textarea name="jica_network_description" rows="3" cols="80"></textarea><br><br>
+
+      <h3>5B.3 Data Updates & Maintenance</h3>
+      <p>21. Are updates to the JICA DBMS done in real-time or on a scheduled basis?</p>
+      <label><input type="radio" name="jica_updates" value="realtime"> Real-time updates</label><br>
+      <label><input type="radio" name="jica_updates" value="daily"> Scheduled batch updates (daily)</label><br>
+      <label><input type="radio" name="jica_updates" value="weekly"> Scheduled batch updates (weekly)</label><br>
+      <label><input type="radio" name="jica_updates" value="monthly"> Scheduled batch updates (monthly)</label><br>
+      <label><input type="radio" name="jica_updates" value="adhoc"> Ad-hoc/irregular updates</label><br>
+      <label><input type="radio" name="jica_updates" value="unknown"> Unknown - need to investigate</label><br><br>
+
+      <label>What is the schedule for system maintenance and updates?</label><br>
+      <textarea name="jica_maintenance" rows="3" cols="80"></textarea><br><br>
+
+      <p>22. Are backups of the JICA DBMS performed regularly?</p>
+      <label><input type="radio" name="jica_backups" value="daily"> Yes - daily backups</label><br>
+      <label><input type="radio" name="jica_backups" value="weekly"> Yes - weekly backups</label><br>
+      <label><input type="radio" name="jica_backups" value="monthly"> Yes - monthly backups</label><br>
+      <label><input type="radio" name="jica_backups" value="none"> No regular backups</label><br>
+      <label><input type="radio" name="jica_backups" value="unknown"> Unknown - need to investigate</label><br><br>
+
+      <label>Where are backups stored? (on-site, off-site, cloud, etc.):</label><br>
+      <textarea name="jica_backups_where" rows="2" cols="80"></textarea><br><br>
+
+      <h3>5B.4 Administration & Access Control</h3>
+      <p>23. Who manages the JICA DBMS administrator access?</p>
+      <label><input type="radio" name="jica_admin_responsible" value="dot_ict"> DoT ICT Division</label><br>
+      <label><input type="radio" name="jica_admin_responsible" value="maritime_staff"> Maritime Division staff</label><br>
+      <label><input type="radio" name="jica_admin_responsible" value="jica_consultants"> External JICA consultants</label><br>
+      <label><input type="radio" name="jica_admin_responsible" value="shared"> Shared responsibility</label><br>
+      <label><input type="radio" name="jica_admin_responsible" value="unknown"> Unknown - need to investigate</label><br><br>
+
+      <label>Please provide details on administration responsibilities:</label><br>
+      <textarea name="jica_admin_details" rows="3" cols="80"></textarea><br><br>
+
+      <p>24. Who currently has administrator-level access to the JICA DBMS?</p>
+      <table border="1" cellpadding="4" cellspacing="0">
+        <tr>
+          <th>Name/Position</th>
+          <th>Organization</th>
+          <th>Access Level</th>
+        </tr>
+        <tr>
+          <td><input type="text" name="jica_admin1_name"></td>
+          <td><input type="text" name="jica_admin1_org"></td>
+          <td><input type="text" name="jica_admin1_level"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="jica_admin2_name"></td>
+          <td><input type="text" name="jica_admin2_org"></td>
+          <td><input type="text" name="jica_admin2_level"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="jica_admin3_name"></td>
+          <td><input type="text" name="jica_admin3_org"></td>
+          <td><input type="text" name="jica_admin3_level"></td>
+        </tr>
+      </table><br>
+
+      <label>Number of active users:</label><br>
+      <input type="text" name="jica_users_number"><br><br>
+
+      <label>Frequency of use (daily/weekly/monthly):</label><br>
+      <input type="text" name="jica_users_frequency"><br><br>
+
+      <h3>5B.5 Integration Readiness</h3>
+      <p>25. Does the JICA DBMS have any existing data export capabilities?</p>
+      <label><input type="checkbox" name="jica_export" value="excel_csv"> Yes - can export to Excel/CSV</label><br>
+      <label>
+        <input type="checkbox" name="jica_export" value="other_formats">
+        Yes - can export to other formats:
+        <input type="text" name="jica_export_other_formats">
+      </label><br>
+      <label><input type="checkbox" name="jica_export" value="api"> Yes - has API/web services for data access</label><br>
+      <label><input type="checkbox" name="jica_export" value="no_export"> No export capabilities</label><br>
+      <label><input type="checkbox" name="jica_export" value="unknown"> Unknown - need to investigate</label><br><br>
+
+      <p>26. Would the Maritime Division agree to link/integrate the JICA DBMS with the DoT TSDIS Project?</p>
+      <label><input type="radio" name="jica_integration_support" value="yes_full"> Yes - fully supportive of integration</label><br>
+      <label><input type="radio" name="jica_integration_support" value="yes_with_conditions"> Yes - with conditions</label><br>
+      <label><input type="radio" name="jica_integration_support" value="uncertain"> Uncertain - need to discuss further</label><br>
+      <label><input type="radio" name="jica_integration_support" value="no"> No - prefer to keep systems separate</label><br>
+      <label><input type="radio" name="jica_integration_support" value="consult_management"> Need to consult with management/JICA</label><br><br>
+
+      <label>Please explain any conditions, concerns, or considerations:</label><br>
+      <textarea name="jica_integration_conditions" rows="4" cols="80"></textarea><br><br>
+
+      <p>27. What would be the preferred integration approach?</p>
+      <label><input type="radio" name="jica_integration_approach" value="full_sync"> Full data synchronization (real-time or scheduled)</label><br>
+      <label><input type="radio" name="jica_integration_approach" value="one_way_to_tsdis"> One-way data feed from JICA DBMS to TSDIS</label><br>
+      <label><input type="radio" name="jica_integration_approach" value="one_way_from_tsdis"> One-way data feed from TSDIS to JICA DBMS</label><br>
+      <label><input type="radio" name="jica_integration_approach" value="manual_import"> Manual data export/import process</label><br>
+      <label>
+        <input type="radio" name="jica_integration_approach" value="other">
+        Other:
+        <input type="text" name="jica_integration_approach_other">
+      </label><br><br>
+
+      <h3>5B.6 Ongoing JICA Involvement</h3>
+      <p>28. Is there ongoing support or involvement from JICA consultants?</p>
+      <label><input type="radio" name="jica_support" value="active"> Yes - active ongoing support</label><br>
+      <label><input type="radio" name="jica_support" value="periodic"> Yes - periodic support visits</label><br>
+      <label><input type="radio" name="jica_support" value="none"> No - JICA involvement has concluded</label><br>
+      <label><input type="radio" name="jica_support" value="unknown"> Unknown</label><br><br>
+
+      <label>If yes, provide JICA consultant contact details if available:</label><br>
+      <textarea name="jica_support_contacts" rows="3" cols="80"></textarea><br><br>
+
+      <label>29. Are there any contractual or licensing considerations with JICA regarding the DBMS?</label><br>
+      <textarea name="jica_contract_issues" rows="3" cols="80"></textarea><br><br>
+
+      <h3>5B.7 System Challenges & Gaps</h3>
+      <label>30. What are the current limitations or challenges with the JICA DBMS?</label><br>
+      <textarea name="jica_limitations" rows="4" cols="80"></textarea><br><br>
+
+      <label>31. What functionality is missing that you wish it had?</label><br>
+      <textarea name="jica_missing_features" rows="4" cols="80"></textarea><br><br>
+    </fieldset>
+
+    <!-- PART 6: TSDIS REQUIREMENTS -->
+    <fieldset>
+      <legend>Part 6: TSDIS Requirements & Priorities</legend>
+
+      <h3>6.1 Feature Importance (1 = Critical, 2 = Important, 3 = Nice to Have)</h3>
+      <table border="1" cellpadding="4" cellspacing="0">
+        <tr>
+          <th>Feature</th>
+          <th>Importance (1–3)</th>
+        </tr>
+        <tr>
+          <td>Centralized maritime data repository accessible by all agencies</td>
+          <td><input type="text" name="feature_central_repo"></td>
+        </tr>
+        <tr>
+          <td>Standardized data entry forms/templates</td>
+          <td><input type="text" name="feature_standard_forms"></td>
+        </tr>
+        <tr>
+          <td>Automated data validation and quality checks</td>
+          <td><input type="text" name="feature_validation"></td>
+        </tr>
+        <tr>
+          <td>Real-time dashboards showing maritime sector performance</td>
+          <td><input type="text" name="feature_dashboards"></td>
+        </tr>
+        <tr>
+          <td>Automated report generation</td>
+          <td><input type="text" name="feature_reports"></td>
+        </tr>
+        <tr>
+          <td>Geographic/mapping features for ports and shipping routes</td>
+          <td><input type="text" name="feature_gis"></td>
+        </tr>
+        <tr>
+          <td>Audit trail of all data changes</td>
+          <td><input type="text" name="feature_audit_trail"></td>
+        </tr>
+        <tr>
+          <td>Role-based access controls</td>
+          <td><input type="text" name="feature_rbac"></td>
+        </tr>
+        <tr>
+          <td>Integration with NMSA and PNG Ports systems</td>
+          <td><input type="text" name="feature_integration_nmsa"></td>
+        </tr>
+        <tr>
+          <td>Integration with existing JICA DBMS</td>
+          <td><input type="text" name="feature_integration_jica"></td>
+        </tr>
+        <tr>
+          <td>Data export capabilities (Excel, PDF, etc.)</td>
+          <td><input type="text" name="feature_export"></td>
+        </tr>
+        <tr>
+          <td>Notification system for data submission deadlines</td>
+          <td><input type="text" name="feature_notifications"></td>
+        </tr>
+      </table><br>
+
+      <h3>6.2 The One Thing</h3>
+      <label>
+        32. If TSDIS could only fix ONE of your current problems, which one would matter most?
+      </label><br>
+      <textarea name="tsdis_one_thing" rows="4" cols="80"></textarea><br><br>
+
+      <h3>6.3 Must-Haves for Day 1</h3>
+      <p>33. If TSDIS launches with ONLY 3 features, which 3 would you choose?</p>
+      <label>Feature 1:</label><br>
+      <input type="text" name="tsdis_musthave1"><br>
+      <label>Feature 2:</label><br>
+      <input type="text" name="tsdis_musthave2"><br>
+      <label>Feature 3:</label><br>
+      <input type="text" name="tsdis_musthave3"><br><br>
+    </fieldset>
+
+    <!-- PART 7: IMPLEMENTATION CONSIDERATIONS -->
+    <fieldset>
+      <legend>Part 7: Implementation Considerations</legend>
+
+      <h3>7.1 Training Needs</h3>
+      <label>34. What training would Maritime Division staff need to effectively use TSDIS?</label><br>
+      <textarea name="training_needs" rows="4" cols="80"></textarea><br><br>
+
+      <h3>7.2 Implementation Risks</h3>
+      <p>35. What could prevent successful TSDIS implementation? Rate: High/Medium/Low</p>
+      <table border="1" cellpadding="4" cellspacing="0">
+        <tr>
+          <th>Risk</th>
+          <th>Rating (High/Medium/Low)</th>
+        </tr>
+        <tr>
+          <td>Lack of staff capacity</td>
+          <td><input type="text" name="risk_capacity"></td>
+        </tr>
+        <tr>
+          <td>Insufficient technical skills</td>
+          <td><input type="text" name="risk_skills"></td>
+        </tr>
+        <tr>
+          <td>Poor internet connectivity</td>
+          <td><input type="text" name="risk_internet"></td>
+        </tr>
+        <tr>
+          <td>Resistance to change</td>
+          <td><input type="text" name="risk_change"></td>
+        </tr>
+        <tr>
+          <td>Budget constraints</td>
+          <td><input type="text" name="risk_budget"></td>
+        </tr>
+        <tr>
+          <td>Coordination challenges with NMSA/PNG Ports</td>
+          <td><input type="text" name="risk_coordination"></td>
+        </tr>
+        <tr>
+          <td>Integration challenges with existing JICA DBMS</td>
+          <td><input type="text" name="risk_jica_integration"></td>
+        </tr>
+        <tr>
+          <td>Other (specify)</td>
+          <td><input type="text" name="risk_other"></td>
+        </tr>
+      </table><br>
+
+      <h3>7.3 Cloud Hosting</h3>
+      <label>36. Would cloud-based hosting be acceptable? Any concerns about data sovereignty or security?</label><br>
+      <textarea name="cloud_concerns" rows="4" cols="80"></textarea><br><br>
+
+      <h3>7.4 Additional Comments</h3>
+      <label>37. Is there anything else we should know about the Maritime Division's needs, existing systems, or constraints?</label><br>
+      <textarea name="additional_comments" rows="4" cols="80"></textarea><br><br>
+    </fieldset>
+
+    <p><strong>Thank you for completing this questionnaire.</strong></p>
+    <p>Please click "Submit" to send your responses.</p>
+
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>
