@@ -42,255 +42,335 @@
     .info-table { width: 100%; margin: 15px 0; }
     .info-table td { padding: 10px; border: 1px solid #ccc; }
     .info-table td:first-child { background: #f5f5f5; font-weight: bold; width: 200px; }
-    button[type="submit"] { background: #1F4E79; color: white; padding: 15px 40px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; display: block; margin: 20px auto; }
-    button[type="submit"]:hover { background: #2E75B6; }
-    .page-break { page-break-before: always; border-top: 3px dashed #1F4E79; margin: 30px 0; padding-top: 20px; }
-    .page-label { text-align: center; color: #1F4E79; font-size: 12px; font-weight: bold; margin-bottom: 15px; }
+
+    /* Page visibility */
+    .form-page { display: none; }
+    .form-page.active { display: block; }
+
+    /* Progress bar */
+    .progress-container { background: #e0e0e0; border-radius: 10px; margin-bottom: 20px; height: 20px; overflow: hidden; }
+    .progress-bar { background: linear-gradient(90deg, #1F4E79, #2E75B6); height: 100%; transition: width 0.3s ease; border-radius: 10px; }
+    .progress-text { text-align: center; font-size: 12px; color: #666; margin-top: 5px; }
+
+    /* Navigation buttons */
+    .nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; }
+    .nav-buttons button { padding: 12px 30px; border: none; border-radius: 5px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+    .btn-back { background: #6c757d; color: white; }
+    .btn-back:hover { background: #5a6268; }
+    .btn-back:disabled { background: #ccc; cursor: not-allowed; }
+    .btn-next { background: #1F4E79; color: white; }
+    .btn-next:hover { background: #2E75B6; }
+    .btn-save { background: #28a745; color: white; }
+    .btn-save:hover { background: #218838; }
+    .btn-submit { background: #1F4E79; color: white; padding: 15px 40px; font-size: 16px; }
+    .btn-submit:hover { background: #2E75B6; }
+    .btn-start { background: #1F4E79; color: white; padding: 15px 40px; font-size: 16px; display: block; margin: 20px auto; }
+    .btn-start:hover { background: #2E75B6; }
+
+    /* Save notification */
+    .save-notification { position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 15px 25px; border-radius: 5px; display: none; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    .save-notification.show { display: block; animation: fadeInOut 3s ease; }
+    @keyframes fadeInOut { 0% { opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { opacity: 0; } }
+
+    /* Saved data notice */
+    .saved-data-notice { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px; display: none; }
+    .saved-data-notice.show { display: block; }
+    .saved-data-notice button { margin-left: 10px; padding: 5px 15px; background: #155724; color: white; border: none; border-radius: 3px; cursor: pointer; }
+
+    /* Validation error */
+    .validation-error { color: #e74c3c; font-size: 12px; margin-top: 5px; display: none; }
+    input:invalid, textarea:invalid, select:invalid { border-color: #e74c3c; }
   </style>
 </head>
 <body>
 
-<form name="tsdis-questionnaire" method="POST" data-netlify="true" action="/success.html">
+<div class="save-notification" id="saveNotification">Progress saved successfully!</div>
 
-  <!-- ==================== WELCOME PAGE ==================== -->
-  <div class="page-label">WELCOME PAGE</div>
-  
-  <h1>Transport Sector Database and Information System (TSDIS)</h1>
-  <h2>PNG Road Fund (PNGRF) – Consultation Questionnaire</h2>
+<div class="saved-data-notice" id="savedDataNotice">
+  <strong>Welcome back!</strong> You have saved progress from a previous session.
+  <button onclick="clearSavedData()">Start Fresh</button>
+</div>
 
-  <div class="welcome-box">
-    <p><strong>Project Authority:</strong> NEC Decision No. 289/2020</p>
-    <p><strong>Purpose:</strong> This questionnaire will help us understand PNGRF's current data sources, workflows, 
-    stakeholder relationships, challenges, and requirements for the Transport Sector Database and 
-    Information System (TSDIS).</p>
-    <p>Your input is essential to ensure TSDIS meets your needs and supports your oversight and 
-    funding allocation functions effectively.</p>
-  </div>
+<div class="progress-container">
+  <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+</div>
+<div class="progress-text" id="progressText">Page 1 of 18</div>
 
-  <table class="info-table">
-    <tr>
-      <td>Estimated Completion Time</td>
-      <td>50–65 minutes</td>
-    </tr>
-    <tr>
-      <td>Save Progress</td>
-      <td>You can save and return to complete later</td>
-    </tr>
-    <tr>
-      <td>One Response Needed</td>
-      <td>One completed response from PNGRF is sufficient</td>
-    </tr>
-  </table>
+<form name="tsdis-questionnaire" method="POST" data-netlify="true" action="/success.html" id="mainForm">
 
-  <div class="instructions-box">
-    <strong>Instructions:</strong>
-    <ul>
-      <li>Please answer as completely as possible based on your knowledge and experience</li>
-      <li>If you are unsure about any question, write <strong>"Need to investigate"</strong> and we will follow up</li>
-      <li>For technical questions, you may wish to consult with relevant colleagues</li>
-      <li>Your responses will be kept confidential and used solely for TSDIS planning purposes</li>
-    </ul>
-  </div>
+  <!-- ==================== PAGE 0: WELCOME PAGE ==================== -->
+  <div class="form-page active" data-page="0">
+    <h1>Transport Sector Database and Information System (TSDIS)</h1>
+    <h2>PNG Road Fund (PNGRF) – Consultation Questionnaire</h2>
 
-  <!-- ==================== CONTACT INFORMATION ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 1: CONTACT INFORMATION</div>
-
-  <fieldset>
-    <legend>Contact Information</legend>
-
-    <label for="name" class="required">Q1. Full Name</label>
-    <span class="field-type">[SHORT TEXT - Required]</span>
-    <input type="text" id="name" name="name" placeholder="Enter your full name" required>
-
-    <label for="position" class="required">Q2. Position / Job Title</label>
-    <span class="field-type">[SHORT TEXT - Required]</span>
-    <input type="text" id="position" name="position" placeholder="e.g., Finance Manager, Data Analyst" required>
-
-    <label for="email" class="required">Q3. Email Address</label>
-    <span class="field-type">[EMAIL - Required]</span>
-    <span class="helper-text">Enable email validation</span>
-    <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
-
-    <label for="phone">Q4. Phone Number</label>
-    <span class="field-type">[PHONE NUMBER - Optional]</span>
-    <input type="tel" id="phone" name="phone" placeholder="e.g., +675 xxx xxxx">
-  </fieldset>
-
-  <!-- ==================== PART 1A: ORGANIZATIONAL OVERVIEW ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 2: PART 1 - PNGRF ROLE & MANDATE</div>
-
-  <fieldset>
-    <legend>Part 1: PNGRF Role & Mandate</legend>
-
-    <div class="sub-section">1.1 Organizational Overview</div>
-
-    <label for="mandate" class="required">Q6. Please briefly describe PNGRF's primary mandate and how it operates under the Road (Management and Fund) Act 2020:</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <span class="helper-text">Character limit: 1000 | Rows: 4</span>
-    <textarea id="mandate" name="mandate" rows="4" placeholder="Describe PNGRF's core mandate and legislative framework..." required></textarea>
-
-    <label for="structure" class="required">Q7. How is PNGRF currently structured? (Key divisions/units and their functions)</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <span class="helper-text">Character limit: 800 | Rows: 4</span>
-    <textarea id="structure" name="structure" rows="4" placeholder="List main divisions and their responsibilities..." required></textarea>
-
-    <label class="required">Q8. Which of PNGRF's five legislative functions require the most data support?</label>
-    <span class="field-type">[RANKING / DRAG-AND-DROP]</span>
-    <span class="helper-text">Rank items 1-5 by dragging, where 1 = most data-intensive</span>
-    <table>
-      <tr>
-        <th>Function</th>
-        <th style="width: 100px;">Rank (1-5)</th>
-      </tr>
-      <tr>
-        <td>Fund Management and Utilization (RMTF)</td>
-        <td><input type="number" name="rank_fund_mgmt" min="1" max="5"></td>
-      </tr>
-      <tr>
-        <td>Financial Allocation (5-year investment programme)</td>
-        <td><input type="number" name="rank_allocation" min="1" max="5"></td>
-      </tr>
-      <tr>
-        <td>Work Plan Oversight (reviewing DoWH/RTA submissions)</td>
-        <td><input type="number" name="rank_workplan" min="1" max="5"></td>
-      </tr>
-      <tr>
-        <td>Operational Monitoring (road maintenance progress)</td>
-        <td><input type="number" name="rank_monitoring" min="1" max="5"></td>
-      </tr>
-      <tr>
-        <td>Performance Accountability (measuring road authority performance)</td>
-        <td><input type="number" name="rank_performance" min="1" max="5"></td>
-      </tr>
-    </table>
-  </fieldset>
-
-  <!-- ==================== PART 1B: REPORTING OBLIGATIONS ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 3: PART 1 - REPORTING OBLIGATIONS</div>
-
-  <fieldset>
-    <legend>Part 1: PNGRF Role & Mandate (continued)</legend>
-
-    <div class="sub-section">1.2 Reporting Obligations</div>
-
-    <label>Q9. What are your main regular reports?</label>
-    <span class="field-type">[REPEATABLE TABLE / MATRIX INPUT]</span>
-    <span class="helper-text">Allow 1-6 rows | Frequency dropdown: Daily, Weekly, Monthly, Quarterly, Annually, Ad-hoc</span>
-    <table>
-      <tr>
-        <th>Report Name</th>
-        <th>Frequency</th>
-        <th>Audience</th>
-        <th>Key Data Required</th>
-      </tr>
-      <tr>
-        <td><input type="text" name="report1_name" placeholder="Report name"></td>
-        <td>
-          <select name="report1_frequency">
-            <option value="">Select...</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
-            <option value="annually">Annually</option>
-            <option value="adhoc">Ad-hoc</option>
-          </select>
-        </td>
-        <td><input type="text" name="report1_audience" placeholder="Who receives this?"></td>
-        <td><input type="text" name="report1_data" placeholder="Key data needed"></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="report2_name" placeholder="Report name"></td>
-        <td>
-          <select name="report2_frequency">
-            <option value="">Select...</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
-            <option value="annually">Annually</option>
-            <option value="adhoc">Ad-hoc</option>
-          </select>
-        </td>
-        <td><input type="text" name="report2_audience" placeholder="Who receives this?"></td>
-        <td><input type="text" name="report2_data" placeholder="Key data needed"></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="report3_name" placeholder="Report name"></td>
-        <td>
-          <select name="report3_frequency">
-            <option value="">Select...</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
-            <option value="annually">Annually</option>
-            <option value="adhoc">Ad-hoc</option>
-          </select>
-        </td>
-        <td><input type="text" name="report3_audience" placeholder="Who receives this?"></td>
-        <td><input type="text" name="report3_data" placeholder="Key data needed"></td>
-      </tr>
-      <tr>
-        <td><input type="text" name="report4_name" placeholder="Report name"></td>
-        <td>
-          <select name="report4_frequency">
-            <option value="">Select...</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="quarterly">Quarterly</option>
-            <option value="annually">Annually</option>
-            <option value="adhoc">Ad-hoc</option>
-          </select>
-        </td>
-        <td><input type="text" name="report4_audience" placeholder="Who receives this?"></td>
-        <td><input type="text" name="report4_data" placeholder="Key data needed"></td>
-      </tr>
-    </table>
-  </fieldset>
-
-  <!-- ==================== PART 2A: RAMS ACCESS ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 4: PART 2 - DATA SOURCES & ACCESS (RAMS)</div>
-
-  <fieldset>
-    <legend>Part 2: Data Sources & Access</legend>
-
-    <div class="sub-section">2.1 Roads Asset Management System (RAMS)</div>
-
-    <label class="required">Q10. How does PNGRF currently access RAMS data from DoWH?</label>
-    <span class="field-type">[SINGLE SELECT (Radio Buttons) - Required]</span>
-    <span class="helper-text">Last option 'Other' should reveal a text field</span>
-    <div class="radio-group">
-      <label><input type="radio" name="rams_access" value="direct" required> Direct access to RAMS system</label>
-      <label><input type="radio" name="rams_access" value="extracts"> Receive data extracts/reports from DoWH</label>
-      <label><input type="radio" name="rams_access" value="request"> Request specific data as needed</label>
-      <label><input type="radio" name="rams_access" value="no_access"> No current access to RAMS data</label>
-      <label><input type="radio" name="rams_access" value="other" data-reveals="rams_access_other"> Other: <input type="text" name="rams_access_other" class="other-text-input" placeholder="Please specify"></label>
+    <div class="welcome-box">
+      <p><strong>Project Authority:</strong> NEC Decision No. 289/2020</p>
+      <p><strong>Purpose:</strong> This questionnaire will help us understand PNGRF's current data sources, workflows,
+      stakeholder relationships, challenges, and requirements for the Transport Sector Database and
+      Information System (TSDIS).</p>
+      <p>Your input is essential to ensure TSDIS meets your needs and supports your oversight and
+      funding allocation functions effectively.</p>
     </div>
 
-    <div id="q11-container" class="conditional-question rams-conditional">
-      <label>Q11. If you receive RAMS data, in what format?</label>
-      <span class="field-type">[MULTI-SELECT (Checkboxes)]</span>
-      <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
-      <div class="checkbox-group">
-        <label><input type="checkbox" name="rams_format" value="excel"> Excel spreadsheets</label>
-        <label><input type="checkbox" name="rams_format" value="pdf"> PDF reports</label>
-        <label><input type="checkbox" name="rams_format" value="database"> Database exports</label>
-        <label><input type="checkbox" name="rams_format" value="dashboard"> Online dashboard access</label>
-        <label><input type="checkbox" name="rams_format" value="other" data-reveals="rams_format_other"> Other: <input type="text" name="rams_format_other" class="other-text-input" placeholder="Please specify"></label>
+    <table class="info-table">
+      <tr>
+        <td>Estimated Completion Time</td>
+        <td>50–65 minutes</td>
+      </tr>
+      <tr>
+        <td>Save Progress</td>
+        <td>You can save and return to complete later</td>
+      </tr>
+      <tr>
+        <td>One Response Needed</td>
+        <td>One completed response from PNGRF is sufficient</td>
+      </tr>
+    </table>
+
+    <div class="instructions-box">
+      <strong>Instructions:</strong>
+      <ul>
+        <li>Please answer as completely as possible based on your knowledge and experience</li>
+        <li>If you are unsure about any question, write <strong>"Need to investigate"</strong> and we will follow up</li>
+        <li>For technical questions, you may wish to consult with relevant colleagues</li>
+        <li>Your responses will be kept confidential and used solely for TSDIS planning purposes</li>
+      </ul>
+    </div>
+
+    <button type="button" class="btn-start" onclick="nextPage()">Begin Questionnaire</button>
+  </div>
+
+  <!-- ==================== PAGE 1: CONTACT INFORMATION ==================== -->
+  <div class="form-page" data-page="1">
+    <fieldset>
+      <legend>Contact Information</legend>
+
+      <label for="name" class="required">Q1. Full Name</label>
+      <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+      <label for="position" class="required">Q2. Position / Job Title</label>
+      <input type="text" id="position" name="position" placeholder="e.g., Finance Manager, Data Analyst" required>
+
+      <label for="email" class="required">Q3. Email Address</label>
+      <input type="email" id="email" name="email" placeholder="your.email@example.com" required>
+
+      <label for="phone">Q4. Phone Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="e.g., +675 xxx xxxx">
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2: PART 1 - PNGRF ROLE & MANDATE ==================== -->
+  <div class="form-page" data-page="2">
+    <fieldset>
+      <legend>Part 1: PNGRF Role & Mandate</legend>
+
+      <div class="sub-section">1.1 Organizational Overview</div>
+
+      <label for="mandate" class="required">Q5. Please briefly describe PNGRF's primary mandate and how it operates under the Road (Management and Fund) Act 2020:</label>
+      <textarea id="mandate" name="mandate" rows="4" placeholder="Describe PNGRF's core mandate and legislative framework..." required></textarea>
+
+      <label for="structure" class="required">Q6. How is PNGRF currently structured? (Key divisions/units and their functions)</label>
+      <textarea id="structure" name="structure" rows="4" placeholder="List main divisions and their responsibilities..." required></textarea>
+
+      <label class="required">Q7. Which of PNGRF's five legislative functions require the most data support?</label>
+      <p style="font-size: 12px; color: #666;">Rank items 1-5, where 1 = most data-intensive</p>
+      <table>
+        <tr>
+          <th>Function</th>
+          <th style="width: 100px;">Rank (1-5)</th>
+        </tr>
+        <tr>
+          <td>Fund Management and Utilization (RMTF)</td>
+          <td><input type="number" name="rank_fund_mgmt" min="1" max="5"></td>
+        </tr>
+        <tr>
+          <td>Financial Allocation (5-year investment programme)</td>
+          <td><input type="number" name="rank_allocation" min="1" max="5"></td>
+        </tr>
+        <tr>
+          <td>Work Plan Oversight (reviewing DoWH/RTA submissions)</td>
+          <td><input type="number" name="rank_workplan" min="1" max="5"></td>
+        </tr>
+        <tr>
+          <td>Operational Monitoring (road maintenance progress)</td>
+          <td><input type="number" name="rank_monitoring" min="1" max="5"></td>
+        </tr>
+        <tr>
+          <td>Performance Accountability (measuring road authority performance)</td>
+          <td><input type="number" name="rank_performance" min="1" max="5"></td>
+        </tr>
+      </table>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 3: PART 1 - REPORTING OBLIGATIONS ==================== -->
+  <div class="form-page" data-page="3">
+    <fieldset>
+      <legend>Part 1: PNGRF Role & Mandate (continued)</legend>
+
+      <div class="sub-section">1.2 Reporting Obligations</div>
+
+      <label>Q8. What are your main regular reports?</label>
+      <table>
+        <tr>
+          <th>Report Name</th>
+          <th>Frequency</th>
+          <th>Audience</th>
+          <th>Key Data Required</th>
+        </tr>
+        <tr>
+          <td><input type="text" name="report1_name" placeholder="Report name"></td>
+          <td>
+            <select name="report1_frequency">
+              <option value="">Select...</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="annually">Annually</option>
+              <option value="adhoc">Ad-hoc</option>
+            </select>
+          </td>
+          <td><input type="text" name="report1_audience" placeholder="Who receives this?"></td>
+          <td><input type="text" name="report1_data" placeholder="Key data needed"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="report2_name" placeholder="Report name"></td>
+          <td>
+            <select name="report2_frequency">
+              <option value="">Select...</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="annually">Annually</option>
+              <option value="adhoc">Ad-hoc</option>
+            </select>
+          </td>
+          <td><input type="text" name="report2_audience" placeholder="Who receives this?"></td>
+          <td><input type="text" name="report2_data" placeholder="Key data needed"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="report3_name" placeholder="Report name"></td>
+          <td>
+            <select name="report3_frequency">
+              <option value="">Select...</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="annually">Annually</option>
+              <option value="adhoc">Ad-hoc</option>
+            </select>
+          </td>
+          <td><input type="text" name="report3_audience" placeholder="Who receives this?"></td>
+          <td><input type="text" name="report3_data" placeholder="Key data needed"></td>
+        </tr>
+        <tr>
+          <td><input type="text" name="report4_name" placeholder="Report name"></td>
+          <td>
+            <select name="report4_frequency">
+              <option value="">Select...</option>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly</option>
+              <option value="annually">Annually</option>
+              <option value="adhoc">Ad-hoc</option>
+            </select>
+          </td>
+          <td><input type="text" name="report4_audience" placeholder="Who receives this?"></td>
+          <td><input type="text" name="report4_data" placeholder="Key data needed"></td>
+        </tr>
+      </table>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 4: PART 2 - DATA SOURCES & ACCESS (RAMS) ==================== -->
+  <div class="form-page" data-page="4">
+    <fieldset>
+      <legend>Part 2: Data Sources & Access</legend>
+
+      <div class="sub-section">2.1 Roads Asset Management System (RAMS)</div>
+
+      <label class="required">Q9. How does PNGRF currently access RAMS data from DoWH?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="rams_access" value="direct" required> Direct access to RAMS system</label>
+        <label><input type="radio" name="rams_access" value="extracts"> Receive data extracts/reports from DoWH</label>
+        <label><input type="radio" name="rams_access" value="request"> Request specific data as needed</label>
+        <label><input type="radio" name="rams_access" value="no_access"> No current access to RAMS data</label>
+        <label><input type="radio" name="rams_access" value="other" data-reveals="rams_access_other"> Other: <input type="text" name="rams_access_other" class="other-text-input" placeholder="Please specify"></label>
       </div>
-    </div>
 
-    <div id="q12-container" class="conditional-question rams-conditional">
-      <label>Q12. How frequently do you receive/access RAMS data?</label>
-      <span class="field-type">[DROPDOWN - Required]</span>
-      <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
-      <select name="rams_frequency">
+      <div id="q10-container" class="conditional-question rams-conditional">
+        <label>Q10. If you receive RAMS data, in what format?</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="rams_format" value="excel"> Excel spreadsheets</label>
+          <label><input type="checkbox" name="rams_format" value="pdf"> PDF reports</label>
+          <label><input type="checkbox" name="rams_format" value="database"> Database exports</label>
+          <label><input type="checkbox" name="rams_format" value="dashboard"> Online dashboard access</label>
+          <label><input type="checkbox" name="rams_format" value="other" data-reveals="rams_format_other"> Other: <input type="text" name="rams_format_other" class="other-text-input" placeholder="Please specify"></label>
+        </div>
+      </div>
+
+      <div id="q11-container" class="conditional-question rams-conditional">
+        <label>Q11. How frequently do you receive/access RAMS data?</label>
+        <select name="rams_frequency">
+          <option value="">Select frequency...</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="fortnightly">Fortnightly</option>
+          <option value="monthly">Monthly</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="annually">Annually</option>
+          <option value="adhoc">As needed / Ad-hoc</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+
+      <div id="q12-container" class="conditional-question rams-conditional">
+        <label>Q12. How would you rate the quality and timeliness of RAMS data you receive?</label>
+        <textarea name="rams_quality" rows="3" placeholder="Describe any quality issues, delays, or concerns..."></textarea>
+      </div>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 5: PART 2 - REVENUE DATA & WORK PLANS ==================== -->
+  <div class="form-page" data-page="5">
+    <fieldset>
+      <legend>Part 2: Data Sources & Access (continued)</legend>
+
+      <div class="sub-section">2.2 Revenue Data</div>
+
+      <label for="revenue_process" class="required">Q13. How do you receive Road User Charge (RUC) and Road Damage Charge (RDC) revenue data from Customs?</label>
+      <textarea id="revenue_process" name="revenue_process" rows="3" placeholder="Describe the process, format, and channel for receiving revenue data..." required></textarea>
+
+      <label for="revenue_frequency" class="required">Q14. How frequently is revenue data updated?</label>
+      <select id="revenue_frequency" name="revenue_frequency" required>
         <option value="">Select frequency...</option>
         <option value="daily">Daily</option>
         <option value="weekly">Weekly</option>
@@ -298,710 +378,832 @@
         <option value="monthly">Monthly</option>
         <option value="quarterly">Quarterly</option>
         <option value="annually">Annually</option>
-        <option value="adhoc">As needed / Ad-hoc</option>
-        <option value="na">N/A</option>
+        <option value="irregular">Irregular / Ad-hoc</option>
+        <option value="unknown">Unknown</option>
       </select>
+
+      <div class="sub-section">2.3 Work Plan Submissions</div>
+
+      <label class="required">Q15. How do DoWH and RTA submit their annual work plans and budget requests to PNGRF?</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="workplan_method" value="email"> Email (Word/PDF/Excel attachments)</label>
+        <label><input type="checkbox" name="workplan_method" value="physical"> Physical documents (hard copy)</label>
+        <label><input type="checkbox" name="workplan_method" value="portal"> Online portal/system</label>
+        <label><input type="checkbox" name="workplan_method" value="meetings"> Presented in meetings</label>
+        <label><input type="checkbox" name="workplan_method" value="other" data-reveals="workplan_method_other"> Other: <input type="text" name="workplan_method_other" class="other-text-input" placeholder="Please specify"></label>
+      </div>
+
+      <label for="workplan_requirements" class="required">Q16. What information must work plan submissions include for PNGRF approval?</label>
+      <textarea id="workplan_requirements" name="workplan_requirements" rows="4" placeholder="List required elements, documentation, and data that must be included..." required></textarea>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
     </div>
-
-    <div id="q13-container" class="conditional-question rams-conditional">
-      <label>Q13. How would you rate the quality and timeliness of RAMS data you receive?</label>
-      <span class="field-type">[LONG TEXT]</span>
-      <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
-      <textarea name="rams_quality" rows="3" placeholder="Describe any quality issues, delays, or concerns..."></textarea>
-    </div>
-  </fieldset>
-
-  <!-- ==================== PART 2B: REVENUE DATA & WORK PLANS ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 5: PART 2 - REVENUE DATA & WORK PLANS</div>
-
-  <fieldset>
-    <legend>Part 2: Data Sources & Access (continued)</legend>
-
-    <div class="sub-section">2.2 Revenue Data</div>
-
-    <label for="revenue_process" class="required">Q14. How do you receive Road User Charge (RUC) and Road Damage Charge (RDC) revenue data from Customs?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="revenue_process" name="revenue_process" rows="3" placeholder="Describe the process, format, and channel for receiving revenue data..." required></textarea>
-
-    <label for="revenue_frequency" class="required">Q15. How frequently is revenue data updated?</label>
-    <span class="field-type">[DROPDOWN - Required]</span>
-    <select id="revenue_frequency" name="revenue_frequency" required>
-      <option value="">Select frequency...</option>
-      <option value="daily">Daily</option>
-      <option value="weekly">Weekly</option>
-      <option value="fortnightly">Fortnightly</option>
-      <option value="monthly">Monthly</option>
-      <option value="quarterly">Quarterly</option>
-      <option value="annually">Annually</option>
-      <option value="irregular">Irregular / Ad-hoc</option>
-      <option value="unknown">Unknown</option>
-    </select>
-
-    <div class="sub-section">2.3 Work Plan Submissions</div>
-
-    <label class="required">Q16. How do DoWH and RTA submit their annual work plans and budget requests to PNGRF?</label>
-    <span class="field-type">[MULTI-SELECT (Checkboxes) - Required]</span>
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="workplan_method" value="email"> Email (Word/PDF/Excel attachments)</label>
-      <label><input type="checkbox" name="workplan_method" value="physical"> Physical documents (hard copy)</label>
-      <label><input type="checkbox" name="workplan_method" value="portal"> Online portal/system</label>
-      <label><input type="checkbox" name="workplan_method" value="meetings"> Presented in meetings</label>
-      <label><input type="checkbox" name="workplan_method" value="other" data-reveals="workplan_method_other"> Other: <input type="text" name="workplan_method_other" class="other-text-input" placeholder="Please specify"></label>
-    </div>
-
-    <label for="workplan_requirements" class="required">Q17. What information must work plan submissions include for PNGRF approval?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="workplan_requirements" name="workplan_requirements" rows="4" placeholder="List required elements, documentation, and data that must be included..." required></textarea>
-  </fieldset>
-
-  <!-- ==================== PART 2C: OTHER DATA SOURCES ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 6: PART 2 - OTHER DATA SOURCES</div>
-
-  <fieldset>
-    <legend>Part 2: Data Sources & Access (continued)</legend>
-
-    <div class="sub-section">2.4 Other Data Sources</div>
-
-    <label>Q18. What other data sources does PNGRF use? (Select all that apply)</label>
-    <span class="field-type">[MULTI-SELECT (Checkboxes)]</span>
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="other_data" value="provincial"> Provincial/District road reports</label>
-      <label><input type="checkbox" name="other_data" value="contractor"> Contractor progress reports</label>
-      <label><input type="checkbox" name="other_data" value="rta_enforcement"> RTA enforcement data (axle loads, HHSP)</label>
-      <label><input type="checkbox" name="other_data" value="treasury"> Treasury/Finance data</label>
-      <label><input type="checkbox" name="other_data" value="planning"> National Planning data</label>
-      <label><input type="checkbox" name="other_data" value="other" data-reveals="other_data_other"> Other: <input type="text" name="other_data_other" class="other-text-input" placeholder="Please specify"></label>
-    </div>
-  </fieldset>
-
-  <!-- ==================== PART 3A: SOFTWARE & TOOLS ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 7: PART 3 - INTERNAL SYSTEMS & TOOLS</div>
-
-  <fieldset>
-    <legend>Part 3: Internal Systems & Tools</legend>
-
-    <div class="sub-section">3.1 Current Software & Tools</div>
-
-    <label>Q19. What software tools does PNGRF currently use for data management?</label>
-    <span class="field-type">[MULTI-SELECT (Checkboxes with conditional text fields)]</span>
-    <span class="helper-text">Each 'specify' option should reveal a text field when selected</span>
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="software" value="excel"> Microsoft Excel</label>
-      <label><input type="checkbox" name="software" value="access"> Microsoft Access</label>
-      <label><input type="checkbox" name="software" value="accounting" data-reveals="accounting_software"> Accounting software: <input type="text" name="accounting_software" class="other-text-input" placeholder="Specify name"></label>
-      <label><input type="checkbox" name="software" value="project" data-reveals="project_software"> Project management software: <input type="text" name="project_software" class="other-text-input" placeholder="Specify name"></label>
-      <label><input type="checkbox" name="software" value="bi"> Business intelligence tools (Power BI, Tableau, etc.)</label>
-      <label><input type="checkbox" name="software" value="custom" data-reveals="custom_system"> Custom database/system: <input type="text" name="custom_system" class="other-text-input" placeholder="Specify name"></label>
-      <label><input type="checkbox" name="software" value="other" data-reveals="software_other"> Other: <input type="text" name="software_other" class="other-text-input" placeholder="Please specify"></label>
-    </div>
-
-    <div class="sub-section">3.2 Data Storage</div>
-
-    <label>Q20. Where is PNGRF data currently stored? (Select all that apply)</label>
-    <span class="field-type">[MULTI-SELECT (Checkboxes)]</span>
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="storage" value="laptops"> Individual staff computers/laptops</label>
-      <label><input type="checkbox" name="storage" value="shared_drives"> Network shared drives</label>
-      <label><input type="checkbox" name="storage" value="server"> PNGRF server/database</label>
-      <label><input type="checkbox" name="storage" value="cloud" data-reveals="cloud_provider"> Cloud storage: <input type="text" name="cloud_provider" class="other-text-input" placeholder="Specify provider"></label>
-      <label><input type="checkbox" name="storage" value="physical"> Physical files/filing cabinets</label>
-    </div>
-  </fieldset>
-
-  <!-- ==================== PART 3B: INFRASTRUCTURE ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 8: PART 3 - TECHNICAL INFRASTRUCTURE</div>
-
-  <fieldset>
-    <legend>Part 3: Internal Systems & Tools (continued)</legend>
-
-    <div class="sub-section">3.3 Technical Infrastructure</div>
-
-    <label for="internet">Q21. Internet connectivity - Speed and Reliability</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <textarea id="internet" name="internet" rows="2" placeholder="e.g., Fibre 10Mbps, generally reliable with occasional outages"></textarea>
-
-    <label for="computers">Q22. How many computers/laptops does PNGRF have?</label>
-    <span class="field-type">[NUMBER]</span>
-    <input type="number" id="computers" name="computers" placeholder="e.g., 15" min="0">
-
-    <label for="it_support">Q23. What IT support is available to PNGRF?</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <textarea id="it_support" name="it_support" rows="2" placeholder="e.g., In-house IT officer, outsourced support, government ICT..."></textarea>
-
-    <label class="required">Q24. How would you rate staff technical skill level?</label>
-    <span class="field-type">[SINGLE SELECT (Radio Buttons) - Required]</span>
-    <div class="radio-group">
-      <label><input type="radio" name="skill_level" value="high" required> High - Staff comfortable with databases and advanced Excel</label>
-      <label><input type="radio" name="skill_level" value="medium"> Medium - Staff comfortable with basic Excel and email</label>
-      <label><input type="radio" name="skill_level" value="low"> Low - Limited computer literacy</label>
-      <label><input type="radio" name="skill_level" value="mixed"> Mixed - Varies significantly across staff</label>
-    </div>
-  </fieldset>
-
-  <!-- ==================== PART 4A: TOP FRUSTRATIONS ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 9: PART 4 - CHALLENGES & PAIN POINTS</div>
-
-  <fieldset>
-    <legend>Part 4: Current Challenges & Pain Points</legend>
-
-    <div class="sub-section">4.1 Top Frustrations</div>
-
-    <label class="required">Q25. What are your THREE biggest frustrations with current data access and management?</label>
-    <span class="field-type">[3 x LONG TEXT (Repeatable or Fixed 3 fields)]</span>
-    <span class="helper-text">Each field: Rows 2 | Required: At least first one</span>
-
-    <p><strong>Frustration 1:</strong></p>
-    <textarea name="frustration1" rows="2" placeholder="Describe a key frustration..." required></textarea>
-
-    <p><strong>Frustration 2:</strong></p>
-    <textarea name="frustration2" rows="2" placeholder="Describe a key frustration..."></textarea>
-
-    <p><strong>Frustration 3:</strong></p>
-    <textarea name="frustration3" rows="2" placeholder="Describe a key frustration..."></textarea>
-  </fieldset>
-
-  <!-- ==================== PART 4B: DATA QUALITY ISSUES ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 10: PART 4 - DATA QUALITY ISSUES</div>
-
-  <fieldset>
-    <legend>Part 4: Current Challenges & Pain Points (continued)</legend>
-
-    <div class="sub-section">4.2 Data Quality Issues</div>
-
-    <label>Q26. How often do you encounter the following issues with data you receive?</label>
-    <span class="field-type">[MATRIX / RATING SCALE]</span>
-    <span class="helper-text">Rows = Issues | Columns = Frequency options</span>
-    <table>
-      <tr>
-        <th>Issue</th>
-        <th>Often</th>
-        <th>Sometimes</th>
-        <th>Rarely</th>
-        <th>Never</th>
-      </tr>
-      <tr>
-        <td>Incomplete data</td>
-        <td style="text-align:center"><input type="radio" name="issue_incomplete" value="often"></td>
-        <td style="text-align:center"><input type="radio" name="issue_incomplete" value="sometimes"></td>
-        <td style="text-align:center"><input type="radio" name="issue_incomplete" value="rarely"></td>
-        <td style="text-align:center"><input type="radio" name="issue_incomplete" value="never"></td>
-      </tr>
-      <tr>
-        <td>Late submissions</td>
-        <td style="text-align:center"><input type="radio" name="issue_late" value="often"></td>
-        <td style="text-align:center"><input type="radio" name="issue_late" value="sometimes"></td>
-        <td style="text-align:center"><input type="radio" name="issue_late" value="rarely"></td>
-        <td style="text-align:center"><input type="radio" name="issue_late" value="never"></td>
-      </tr>
-      <tr>
-        <td>Inconsistent formats</td>
-        <td style="text-align:center"><input type="radio" name="issue_formats" value="often"></td>
-        <td style="text-align:center"><input type="radio" name="issue_formats" value="sometimes"></td>
-        <td style="text-align:center"><input type="radio" name="issue_formats" value="rarely"></td>
-        <td style="text-align:center"><input type="radio" name="issue_formats" value="never"></td>
-      </tr>
-      <tr>
-        <td>Data accuracy concerns</td>
-        <td style="text-align:center"><input type="radio" name="issue_accuracy" value="often"></td>
-        <td style="text-align:center"><input type="radio" name="issue_accuracy" value="sometimes"></td>
-        <td style="text-align:center"><input type="radio" name="issue_accuracy" value="rarely"></td>
-        <td style="text-align:center"><input type="radio" name="issue_accuracy" value="never"></td>
-      </tr>
-      <tr>
-        <td>Difficulty verifying data</td>
-        <td style="text-align:center"><input type="radio" name="issue_verification" value="often"></td>
-        <td style="text-align:center"><input type="radio" name="issue_verification" value="sometimes"></td>
-        <td style="text-align:center"><input type="radio" name="issue_verification" value="rarely"></td>
-        <td style="text-align:center"><input type="radio" name="issue_verification" value="never"></td>
-      </tr>
-    </table>
-
-    <div class="sub-section">4.3 Impact of Challenges</div>
-
-    <label for="impact" class="required">Q27. What analysis or decisions are you unable to make due to data limitations?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="impact" name="impact" rows="4" placeholder="Describe decisions or analysis that are difficult or impossible due to current data gaps..." required></textarea>
-  </fieldset>
-
-  <!-- ==================== PART 5: STAKEHOLDER DATA EXCHANGE ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 11: PART 5 - STAKEHOLDER DATA EXCHANGE</div>
-
-  <fieldset>
-    <legend>Part 5: Stakeholder Data Exchange</legend>
-
-    <label>Q28. For each stakeholder, describe the current data exchange arrangement:</label>
-    <span class="field-type">[MATRIX / TABLE INPUT]</span>
-    <span class="helper-text">Fixed 5 rows (stakeholders) | 3 columns of text per row</span>
-    <table>
-      <tr>
-        <th>Stakeholder</th>
-        <th>Data You Receive From Them</th>
-        <th>Data You Provide To Them</th>
-        <th>Current Challenges</th>
-      </tr>
-      <tr>
-        <td style="background:#f5f5f5; font-weight:bold;">Department of Works & Highways (DoWH)</td>
-        <td><textarea name="stakeholder_dowh_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
-        <td><textarea name="stakeholder_dowh_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
-        <td><textarea name="stakeholder_dowh_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
-      </tr>
-      <tr>
-        <td style="background:#f5f5f5; font-weight:bold;">Road Traffic Authority (RTA)</td>
-        <td><textarea name="stakeholder_rta_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
-        <td><textarea name="stakeholder_rta_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
-        <td><textarea name="stakeholder_rta_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
-      </tr>
-      <tr>
-        <td style="background:#f5f5f5; font-weight:bold;">PNG Customs (Revenue)</td>
-        <td><textarea name="stakeholder_customs_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
-        <td><textarea name="stakeholder_customs_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
-        <td><textarea name="stakeholder_customs_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
-      </tr>
-      <tr>
-        <td style="background:#f5f5f5; font-weight:bold;">Treasury / Finance</td>
-        <td><textarea name="stakeholder_treasury_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
-        <td><textarea name="stakeholder_treasury_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
-        <td><textarea name="stakeholder_treasury_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
-      </tr>
-      <tr>
-        <td style="background:#f5f5f5; font-weight:bold;">Provincial/District Authorities</td>
-        <td><textarea name="stakeholder_provincial_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
-        <td><textarea name="stakeholder_provincial_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
-        <td><textarea name="stakeholder_provincial_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
-      </tr>
-    </table>
-
-    <label for="data_agreements">Q29. Are there any formal data sharing agreements or MOUs in place with these stakeholders?</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <textarea id="data_agreements" name="data_agreements" rows="3" placeholder="List any existing agreements or indicate if none exist..."></textarea>
-
-    <label for="improve_exchange">Q30. What would improve data exchange with your key stakeholders?</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <textarea id="improve_exchange" name="improve_exchange" rows="4" placeholder="Describe ideal improvements to data sharing processes..."></textarea>
-  </fieldset>
-
-  <!-- ==================== PART 5B.1: DATA QUALITY ASSURANCE ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 12: PART 5B - DATA GOVERNANCE</div>
-
-  <fieldset>
-    <legend>Part 5B: Data Governance</legend>
-
-    <div class="sub-section">5B.1 Data Quality Assurance</div>
-
-    <label for="governance_responsibility" class="required">Q31. Who within PNGRF is responsible for ensuring the quality of data received from external sources (DoWH, RTA, Customs)?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="governance_responsibility" name="governance_responsibility" rows="3" placeholder="Name the role/position and describe their responsibilities..." required></textarea>
-
-    <label class="required">Q32. Are there defined data quality standards that DoWH/RTA submissions must meet before PNGRF accepts them?</label>
-    <span class="field-type">[SINGLE SELECT (Radio Buttons) - Required]</span>
-    <div class="radio-group">
-      <label><input type="radio" name="governance_standards" value="yes_documented" required> Yes - documented standards exist</label>
-      <label><input type="radio" name="governance_standards" value="yes_informal"> Yes - informal/understood standards</label>
-      <label><input type="radio" name="governance_standards" value="no"> No - submissions accepted as provided</label>
-      <label><input type="radio" name="governance_standards" value="unsure"> Unsure - need to investigate</label>
-    </div>
-
-    <div id="q33-container" class="conditional-question standards-conditional">
-      <label for="governance_standards_detail">Q33. If yes, briefly describe what standards or checks are applied:</label>
-      <span class="field-type">[LONG TEXT]</span>
-      <span class="conditional">⚡ CONDITIONAL: Show only if Q32 = 'Yes - documented...' OR 'Yes - informal...'</span>
-      <textarea id="governance_standards_detail" name="governance_standards_detail" rows="3" placeholder="Describe validation checks, completeness requirements, etc..."></textarea>
-    </div>
-
-    <label for="governance_error_handling" class="required">Q34. What happens when PNGRF identifies errors or inconsistencies in data received from stakeholders?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="governance_error_handling" name="governance_error_handling" rows="3" placeholder="Describe the process for flagging and resolving data issues..." required></textarea>
-  </fieldset>
-
-  <!-- ==================== PART 5B.2: POLICIES & AUTHORITY ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 13: PART 5B - POLICIES & AUTHORITY</div>
-
-  <fieldset>
-    <legend>Part 5B: Data Governance (continued)</legend>
-
-    <div class="sub-section">5B.2 Policies & Procedures</div>
-
-    <label>Q35. Does PNGRF have documented policies for the following?</label>
-    <span class="field-type">[MATRIX / RATING SCALE]</span>
-    <table>
-      <tr>
-        <th>Policy Area</th>
-        <th>Yes - Documented</th>
-        <th>Yes - Informal</th>
-        <th>No</th>
-        <th>Unsure</th>
-      </tr>
-      <tr>
-        <td>Data access and security</td>
-        <td style="text-align:center"><input type="radio" name="policy_access" value="yes_documented"></td>
-        <td style="text-align:center"><input type="radio" name="policy_access" value="yes_informal"></td>
-        <td style="text-align:center"><input type="radio" name="policy_access" value="no"></td>
-        <td style="text-align:center"><input type="radio" name="policy_access" value="unsure"></td>
-      </tr>
-      <tr>
-        <td>Data retention and archival</td>
-        <td style="text-align:center"><input type="radio" name="policy_retention" value="yes_documented"></td>
-        <td style="text-align:center"><input type="radio" name="policy_retention" value="yes_informal"></td>
-        <td style="text-align:center"><input type="radio" name="policy_retention" value="no"></td>
-        <td style="text-align:center"><input type="radio" name="policy_retention" value="unsure"></td>
-      </tr>
-      <tr>
-        <td>Data quality assurance</td>
-        <td style="text-align:center"><input type="radio" name="policy_quality" value="yes_documented"></td>
-        <td style="text-align:center"><input type="radio" name="policy_quality" value="yes_informal"></td>
-        <td style="text-align:center"><input type="radio" name="policy_quality" value="no"></td>
-        <td style="text-align:center"><input type="radio" name="policy_quality" value="unsure"></td>
-      </tr>
-      <tr>
-        <td>Dispute resolution when data is contested</td>
-        <td style="text-align:center"><input type="radio" name="policy_disputes" value="yes_documented"></td>
-        <td style="text-align:center"><input type="radio" name="policy_disputes" value="yes_informal"></td>
-        <td style="text-align:center"><input type="radio" name="policy_disputes" value="no"></td>
-        <td style="text-align:center"><input type="radio" name="policy_disputes" value="unsure"></td>
-      </tr>
-      <tr>
-        <td>Backup and disaster recovery</td>
-        <td style="text-align:center"><input type="radio" name="policy_backup" value="yes_documented"></td>
-        <td style="text-align:center"><input type="radio" name="policy_backup" value="yes_informal"></td>
-        <td style="text-align:center"><input type="radio" name="policy_backup" value="no"></td>
-        <td style="text-align:center"><input type="radio" name="policy_backup" value="unsure"></td>
-      </tr>
-    </table>
-
-    <div class="sub-section">5B.3 Authority & Accountability</div>
-
-    <label for="governance_authority" class="required">Q36. Who has authority to approve or reject data used for funding allocation decisions?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="governance_authority" name="governance_authority" rows="3" placeholder="Identify the role/position with final authority..." required></textarea>
-
-    <label for="governance_audit">Q37. How are changes to critical data (e.g., road condition assessments, budget figures) tracked and audited?</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <textarea id="governance_audit" name="governance_audit" rows="3" placeholder="Describe audit trail, version control, or change logging processes..."></textarea>
-
-    <label for="governance_leverage">Q38. If RAMS data quality is inadequate, what leverage does PNGRF have to require improvements from DoWH?</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <textarea id="governance_leverage" name="governance_leverage" rows="3" placeholder="Describe contractual, legislative, or procedural mechanisms available..."></textarea>
-  </fieldset>
-
-  <!-- ==================== PART 6.1: FEATURE IMPORTANCE ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 14: PART 6 - TSDIS REQUIREMENTS</div>
-
-  <fieldset>
-    <legend>Part 6: TSDIS Requirements & Priorities</legend>
-
-    <div class="sub-section">6.1 Feature Importance Rating</div>
-    <p>Rate each potential TSDIS feature: <strong>1 = Critical</strong>, <strong>2 = Important</strong>, <strong>3 = Nice to Have</strong></p>
-    <span class="field-type">[MATRIX / RATING SCALE]</span>
-    <span class="helper-text">Consider using star ratings or number scale for mobile-friendly input</span>
-
-    <table>
-      <tr>
-        <th>Feature</th>
-        <th style="width:60px">1</th>
-        <th style="width:60px">2</th>
-        <th style="width:60px">3</th>
-      </tr>
-      <tr>
-        <td>Direct access to RAMS data without relying on DoWH extracts</td>
-        <td style="text-align:center"><input type="radio" name="feature_rams" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_rams" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_rams" value="3"></td>
-      </tr>
-      <tr>
-        <td>Real-time dashboard showing road fund revenues and expenditure</td>
-        <td style="text-align:center"><input type="radio" name="feature_dashboard" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_dashboard" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_dashboard" value="3"></td>
-      </tr>
-      <tr>
-        <td>Automated work plan submission portal for DoWH/RTA</td>
-        <td style="text-align:center"><input type="radio" name="feature_portal" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_portal" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_portal" value="3"></td>
-      </tr>
-      <tr>
-        <td>Performance monitoring dashboard for road authorities</td>
-        <td style="text-align:center"><input type="radio" name="feature_performance" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_performance" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_performance" value="3"></td>
-      </tr>
-      <tr>
-        <td>Automated report generation for Minister submissions</td>
-        <td style="text-align:center"><input type="radio" name="feature_reports" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_reports" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_reports" value="3"></td>
-      </tr>
-      <tr>
-        <td>Integration with Customs for real-time RUC/RDC revenue tracking</td>
-        <td style="text-align:center"><input type="radio" name="feature_customs" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_customs" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_customs" value="3"></td>
-      </tr>
-      <tr>
-        <td>Geographic/mapping features for road network visualization</td>
-        <td style="text-align:center"><input type="radio" name="feature_gis" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_gis" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_gis" value="3"></td>
-      </tr>
-      <tr>
-        <td>Audit trail of all funding decisions and allocations</td>
-        <td style="text-align:center"><input type="radio" name="feature_audit" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_audit" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_audit" value="3"></td>
-      </tr>
-      <tr>
-        <td>Role-based access controls</td>
-        <td style="text-align:center"><input type="radio" name="feature_rbac" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_rbac" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_rbac" value="3"></td>
-      </tr>
-      <tr>
-        <td>Data export capabilities (Excel, PDF, etc.)</td>
-        <td style="text-align:center"><input type="radio" name="feature_export" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_export" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_export" value="3"></td>
-      </tr>
-      <tr>
-        <td>Notification system for submission deadlines and approvals</td>
-        <td style="text-align:center"><input type="radio" name="feature_notifications" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_notifications" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_notifications" value="3"></td>
-      </tr>
-      <tr>
-        <td>Provincial/District road network data integration</td>
-        <td style="text-align:center"><input type="radio" name="feature_provincial" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_provincial" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_provincial" value="3"></td>
-      </tr>
-      <tr>
-        <td>Data quality validation and error flagging for submissions</td>
-        <td style="text-align:center"><input type="radio" name="feature_validation" value="1"></td>
-        <td style="text-align:center"><input type="radio" name="feature_validation" value="2"></td>
-        <td style="text-align:center"><input type="radio" name="feature_validation" value="3"></td>
-      </tr>
-    </table>
-  </fieldset>
-
-  <!-- ==================== PART 6.2 & 6.3: ONE THING & MUST-HAVES ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 15: PART 6 - PRIORITIES</div>
-
-  <fieldset>
-    <legend>Part 6: TSDIS Requirements & Priorities (continued)</legend>
-
-    <div class="sub-section">6.2 The One Thing</div>
-
-    <label for="tsdis_one_thing" class="required">Q39. If TSDIS could only fix ONE of your current problems, which one would matter most?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="tsdis_one_thing" name="tsdis_one_thing" rows="4" placeholder="Describe the single most impactful problem TSDIS could solve for PNGRF..." required></textarea>
-
-    <div class="sub-section">6.3 Must-Haves for Day 1</div>
-
-    <label class="required">Q40. If TSDIS launches with ONLY 3 features, which 3 would you choose?</label>
-    <span class="field-type">[3 x SHORT TEXT or DROPDOWN (from feature list)]</span>
-    <span class="helper-text">Option A: Free text fields | Option B: Dropdown selection from feature list (prevents duplicates)</span>
-
-    <p><strong>Feature 1 (highest priority):</strong></p>
-    <input type="text" name="musthave1" placeholder="Enter your top priority feature" required>
-
-    <p><strong>Feature 2:</strong></p>
-    <input type="text" name="musthave2" placeholder="Enter your second priority feature">
-
-    <p><strong>Feature 3:</strong></p>
-    <input type="text" name="musthave3" placeholder="Enter your third priority feature">
-  </fieldset>
-
-  <!-- ==================== PART 7.1 & 7.2: TRAINING & RISKS ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 16: PART 7 - IMPLEMENTATION CONSIDERATIONS</div>
-
-  <fieldset>
-    <legend>Part 7: Implementation Considerations</legend>
-
-    <div class="sub-section">7.1 Training Needs</div>
-
-    <label for="training" class="required">Q41. What training would PNGRF staff need to effectively use TSDIS?</label>
-    <span class="field-type">[LONG TEXT - Required]</span>
-    <textarea id="training" name="training" rows="4" placeholder="Describe training topics, format preferences, and any specific concerns..." required></textarea>
-
-    <div class="sub-section">7.2 Implementation Risks</div>
-
-    <label>Q42. What could prevent successful TSDIS implementation? Rate each risk:</label>
-    <span class="field-type">[MATRIX / RATING SCALE]</span>
-    <table>
-      <tr>
-        <th>Risk</th>
-        <th style="width:70px">High</th>
-        <th style="width:70px">Medium</th>
-        <th style="width:70px">Low</th>
-      </tr>
-      <tr>
-        <td>Lack of staff capacity</td>
-        <td style="text-align:center"><input type="radio" name="risk_capacity" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_capacity" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_capacity" value="low"></td>
-      </tr>
-      <tr>
-        <td>Insufficient technical skills</td>
-        <td style="text-align:center"><input type="radio" name="risk_skills" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_skills" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_skills" value="low"></td>
-      </tr>
-      <tr>
-        <td>Poor internet connectivity</td>
-        <td style="text-align:center"><input type="radio" name="risk_internet" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_internet" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_internet" value="low"></td>
-      </tr>
-      <tr>
-        <td>Resistance to change</td>
-        <td style="text-align:center"><input type="radio" name="risk_change" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_change" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_change" value="low"></td>
-      </tr>
-      <tr>
-        <td>Budget constraints</td>
-        <td style="text-align:center"><input type="radio" name="risk_budget" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_budget" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_budget" value="low"></td>
-      </tr>
-      <tr>
-        <td>Coordination challenges with DoWH</td>
-        <td style="text-align:center"><input type="radio" name="risk_dowh" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_dowh" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_dowh" value="low"></td>
-      </tr>
-      <tr>
-        <td>Coordination challenges with RTA</td>
-        <td style="text-align:center"><input type="radio" name="risk_rta" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_rta" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_rta" value="low"></td>
-      </tr>
-      <tr>
-        <td>Data ownership/governance concerns</td>
-        <td style="text-align:center"><input type="radio" name="risk_governance" value="high"></td>
-        <td style="text-align:center"><input type="radio" name="risk_governance" value="medium"></td>
-        <td style="text-align:center"><input type="radio" name="risk_governance" value="low"></td>
-      </tr>
-    </table>
-
-    <label for="risk_other">Q43. Other risks not listed above:</label>
-    <span class="field-type">[SHORT TEXT - Optional]</span>
-    <input type="text" id="risk_other" name="risk_other" placeholder="Specify any other implementation risks...">
-  </fieldset>
-
-  <!-- ==================== PART 7.3 & 7.4: INTEGRATION & FINAL ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">PAGE 17: PART 7 - FINAL QUESTIONS</div>
-
-  <fieldset>
-    <legend>Part 7: Implementation Considerations (continued)</legend>
-
-    <div class="sub-section">7.3 Integration Considerations</div>
-
-    <label for="integration_concerns">Q44. What concerns, if any, would PNGRF have about sharing data through a central TSDIS platform?</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <textarea id="integration_concerns" name="integration_concerns" rows="4" placeholder="Describe any concerns about data security, ownership, access control, etc..."></textarea>
-
-    <div class="sub-section">7.4 Additional Comments</div>
-
-    <label for="additional_comments">Q45. Is there anything else we should know about PNGRF's needs, current processes, or constraints?</label>
-    <span class="field-type">[LONG TEXT - Optional]</span>
-    <textarea id="additional_comments" name="additional_comments" rows="4" placeholder="Any additional information that would help us understand PNGRF's situation..."></textarea>
-  </fieldset>
-
-  <!-- ==================== THANK YOU PAGE ==================== -->
-  <div class="page-break"></div>
-  <div class="page-label">THANK YOU PAGE</div>
-
-  <div class="thank-you-box">
-    <h2 style="color: #2E7D32; margin-top: 0;">Thank You!</h2>
-    <p><strong>Thank you for completing this questionnaire.</strong></p>
-    <p>Your responses will directly inform the design and implementation planning for the 
-    Transport Sector Database and Information System (TSDIS).</p>
-    
-    <p><strong>What happens next?</strong></p>
-    <ul style="text-align: left; display: inline-block;">
-      <li>We will review your responses and may follow up on specific items</li>
-      <li>A follow-up consultation session may be scheduled if needed</li>
-      <li>Your input will be incorporated into the TSDIS Scoping Report</li>
-    </ul>
-    
-    <p>If you have any questions, please contact the TSDIS Project Team.</p>
   </div>
 
-  <p style="text-align: center; margin-top: 30px;">
-    <button type="submit">Submit Questionnaire</button>
-  </p>
+  <!-- ==================== PAGE 6: PART 2 - OTHER DATA SOURCES ==================== -->
+  <div class="form-page" data-page="6">
+    <fieldset>
+      <legend>Part 2: Data Sources & Access (continued)</legend>
+
+      <div class="sub-section">2.4 Other Data Sources</div>
+
+      <label>Q17. What other data sources does PNGRF use? (Select all that apply)</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="other_data" value="provincial"> Provincial/District road reports</label>
+        <label><input type="checkbox" name="other_data" value="contractor"> Contractor progress reports</label>
+        <label><input type="checkbox" name="other_data" value="rta_enforcement"> RTA enforcement data (axle loads, HHSP)</label>
+        <label><input type="checkbox" name="other_data" value="treasury"> Treasury/Finance data</label>
+        <label><input type="checkbox" name="other_data" value="planning"> National Planning data</label>
+        <label><input type="checkbox" name="other_data" value="other" data-reveals="other_data_other"> Other: <input type="text" name="other_data_other" class="other-text-input" placeholder="Please specify"></label>
+      </div>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 7: PART 3 - INTERNAL SYSTEMS & TOOLS ==================== -->
+  <div class="form-page" data-page="7">
+    <fieldset>
+      <legend>Part 3: Internal Systems & Tools</legend>
+
+      <div class="sub-section">3.1 Current Software & Tools</div>
+
+      <label>Q18. What software tools does PNGRF currently use for data management?</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="software" value="excel"> Microsoft Excel</label>
+        <label><input type="checkbox" name="software" value="access"> Microsoft Access</label>
+        <label><input type="checkbox" name="software" value="accounting" data-reveals="accounting_software"> Accounting software: <input type="text" name="accounting_software" class="other-text-input" placeholder="Specify name"></label>
+        <label><input type="checkbox" name="software" value="project" data-reveals="project_software"> Project management software: <input type="text" name="project_software" class="other-text-input" placeholder="Specify name"></label>
+        <label><input type="checkbox" name="software" value="bi"> Business intelligence tools (Power BI, Tableau, etc.)</label>
+        <label><input type="checkbox" name="software" value="custom" data-reveals="custom_system"> Custom database/system: <input type="text" name="custom_system" class="other-text-input" placeholder="Specify name"></label>
+        <label><input type="checkbox" name="software" value="other" data-reveals="software_other"> Other: <input type="text" name="software_other" class="other-text-input" placeholder="Please specify"></label>
+      </div>
+
+      <div class="sub-section">3.2 Data Storage</div>
+
+      <label>Q19. Where is PNGRF data currently stored? (Select all that apply)</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="storage" value="laptops"> Individual staff computers/laptops</label>
+        <label><input type="checkbox" name="storage" value="shared_drives"> Network shared drives</label>
+        <label><input type="checkbox" name="storage" value="server"> PNGRF server/database</label>
+        <label><input type="checkbox" name="storage" value="cloud" data-reveals="cloud_provider"> Cloud storage: <input type="text" name="cloud_provider" class="other-text-input" placeholder="Specify provider"></label>
+        <label><input type="checkbox" name="storage" value="physical"> Physical files/filing cabinets</label>
+      </div>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 8: PART 3 - TECHNICAL INFRASTRUCTURE ==================== -->
+  <div class="form-page" data-page="8">
+    <fieldset>
+      <legend>Part 3: Internal Systems & Tools (continued)</legend>
+
+      <div class="sub-section">3.3 Technical Infrastructure</div>
+
+      <label for="internet">Q20. Internet connectivity - Speed and Reliability</label>
+      <textarea id="internet" name="internet" rows="2" placeholder="e.g., Fibre 10Mbps, generally reliable with occasional outages"></textarea>
+
+      <label for="computers">Q21. How many computers/laptops does PNGRF have?</label>
+      <input type="number" id="computers" name="computers" placeholder="e.g., 15" min="0">
+
+      <label for="it_support">Q22. What IT support is available to PNGRF?</label>
+      <textarea id="it_support" name="it_support" rows="2" placeholder="e.g., In-house IT officer, outsourced support, government ICT..."></textarea>
+
+      <label class="required">Q23. How would you rate staff technical skill level?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="skill_level" value="high" required> High - Staff comfortable with databases and advanced Excel</label>
+        <label><input type="radio" name="skill_level" value="medium"> Medium - Staff comfortable with basic Excel and email</label>
+        <label><input type="radio" name="skill_level" value="low"> Low - Limited computer literacy</label>
+        <label><input type="radio" name="skill_level" value="mixed"> Mixed - Varies significantly across staff</label>
+      </div>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 9: PART 4 - CHALLENGES & PAIN POINTS ==================== -->
+  <div class="form-page" data-page="9">
+    <fieldset>
+      <legend>Part 4: Current Challenges & Pain Points</legend>
+
+      <div class="sub-section">4.1 Top Frustrations</div>
+
+      <label class="required">Q24. What are your THREE biggest frustrations with current data access and management?</label>
+
+      <p><strong>Frustration 1:</strong></p>
+      <textarea name="frustration1" rows="2" placeholder="Describe a key frustration..." required></textarea>
+
+      <p><strong>Frustration 2:</strong></p>
+      <textarea name="frustration2" rows="2" placeholder="Describe a key frustration..."></textarea>
+
+      <p><strong>Frustration 3:</strong></p>
+      <textarea name="frustration3" rows="2" placeholder="Describe a key frustration..."></textarea>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 10: PART 4 - DATA QUALITY ISSUES ==================== -->
+  <div class="form-page" data-page="10">
+    <fieldset>
+      <legend>Part 4: Current Challenges & Pain Points (continued)</legend>
+
+      <div class="sub-section">4.2 Data Quality Issues</div>
+
+      <label>Q25. How often do you encounter the following issues with data you receive?</label>
+      <table>
+        <tr>
+          <th>Issue</th>
+          <th>Often</th>
+          <th>Sometimes</th>
+          <th>Rarely</th>
+          <th>Never</th>
+        </tr>
+        <tr>
+          <td>Incomplete data</td>
+          <td style="text-align:center"><input type="radio" name="issue_incomplete" value="often"></td>
+          <td style="text-align:center"><input type="radio" name="issue_incomplete" value="sometimes"></td>
+          <td style="text-align:center"><input type="radio" name="issue_incomplete" value="rarely"></td>
+          <td style="text-align:center"><input type="radio" name="issue_incomplete" value="never"></td>
+        </tr>
+        <tr>
+          <td>Late submissions</td>
+          <td style="text-align:center"><input type="radio" name="issue_late" value="often"></td>
+          <td style="text-align:center"><input type="radio" name="issue_late" value="sometimes"></td>
+          <td style="text-align:center"><input type="radio" name="issue_late" value="rarely"></td>
+          <td style="text-align:center"><input type="radio" name="issue_late" value="never"></td>
+        </tr>
+        <tr>
+          <td>Inconsistent formats</td>
+          <td style="text-align:center"><input type="radio" name="issue_formats" value="often"></td>
+          <td style="text-align:center"><input type="radio" name="issue_formats" value="sometimes"></td>
+          <td style="text-align:center"><input type="radio" name="issue_formats" value="rarely"></td>
+          <td style="text-align:center"><input type="radio" name="issue_formats" value="never"></td>
+        </tr>
+        <tr>
+          <td>Data accuracy concerns</td>
+          <td style="text-align:center"><input type="radio" name="issue_accuracy" value="often"></td>
+          <td style="text-align:center"><input type="radio" name="issue_accuracy" value="sometimes"></td>
+          <td style="text-align:center"><input type="radio" name="issue_accuracy" value="rarely"></td>
+          <td style="text-align:center"><input type="radio" name="issue_accuracy" value="never"></td>
+        </tr>
+        <tr>
+          <td>Difficulty verifying data</td>
+          <td style="text-align:center"><input type="radio" name="issue_verification" value="often"></td>
+          <td style="text-align:center"><input type="radio" name="issue_verification" value="sometimes"></td>
+          <td style="text-align:center"><input type="radio" name="issue_verification" value="rarely"></td>
+          <td style="text-align:center"><input type="radio" name="issue_verification" value="never"></td>
+        </tr>
+      </table>
+
+      <div class="sub-section">4.3 Impact of Challenges</div>
+
+      <label for="impact" class="required">Q26. What analysis or decisions are you unable to make due to data limitations?</label>
+      <textarea id="impact" name="impact" rows="4" placeholder="Describe decisions or analysis that are difficult or impossible due to current data gaps..." required></textarea>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 11: PART 5 - STAKEHOLDER DATA EXCHANGE ==================== -->
+  <div class="form-page" data-page="11">
+    <fieldset>
+      <legend>Part 5: Stakeholder Data Exchange</legend>
+
+      <label>Q27. For each stakeholder, describe the current data exchange arrangement:</label>
+      <table>
+        <tr>
+          <th>Stakeholder</th>
+          <th>Data You Receive From Them</th>
+          <th>Data You Provide To Them</th>
+          <th>Current Challenges</th>
+        </tr>
+        <tr>
+          <td style="background:#f5f5f5; font-weight:bold;">Department of Works & Highways (DoWH)</td>
+          <td><textarea name="stakeholder_dowh_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
+          <td><textarea name="stakeholder_dowh_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
+          <td><textarea name="stakeholder_dowh_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
+        </tr>
+        <tr>
+          <td style="background:#f5f5f5; font-weight:bold;">Road Traffic Authority (RTA)</td>
+          <td><textarea name="stakeholder_rta_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
+          <td><textarea name="stakeholder_rta_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
+          <td><textarea name="stakeholder_rta_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
+        </tr>
+        <tr>
+          <td style="background:#f5f5f5; font-weight:bold;">PNG Customs (Revenue)</td>
+          <td><textarea name="stakeholder_customs_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
+          <td><textarea name="stakeholder_customs_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
+          <td><textarea name="stakeholder_customs_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
+        </tr>
+        <tr>
+          <td style="background:#f5f5f5; font-weight:bold;">Treasury / Finance</td>
+          <td><textarea name="stakeholder_treasury_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
+          <td><textarea name="stakeholder_treasury_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
+          <td><textarea name="stakeholder_treasury_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
+        </tr>
+        <tr>
+          <td style="background:#f5f5f5; font-weight:bold;">Provincial/District Authorities</td>
+          <td><textarea name="stakeholder_provincial_receive" rows="2" placeholder="What data do you receive?"></textarea></td>
+          <td><textarea name="stakeholder_provincial_provide" rows="2" placeholder="What data do you provide?"></textarea></td>
+          <td><textarea name="stakeholder_provincial_challenges" rows="2" placeholder="What challenges exist?"></textarea></td>
+        </tr>
+      </table>
+
+      <label for="data_agreements">Q28. Are there any formal data sharing agreements or MOUs in place with these stakeholders?</label>
+      <textarea id="data_agreements" name="data_agreements" rows="3" placeholder="List any existing agreements or indicate if none exist..."></textarea>
+
+      <label for="improve_exchange">Q29. What would improve data exchange with your key stakeholders?</label>
+      <textarea id="improve_exchange" name="improve_exchange" rows="4" placeholder="Describe ideal improvements to data sharing processes..."></textarea>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 12: PART 5B - DATA GOVERNANCE ==================== -->
+  <div class="form-page" data-page="12">
+    <fieldset>
+      <legend>Part 5B: Data Governance</legend>
+
+      <div class="sub-section">5B.1 Data Quality Assurance</div>
+
+      <label for="governance_responsibility" class="required">Q30. Who within PNGRF is responsible for ensuring the quality of data received from external sources (DoWH, RTA, Customs)?</label>
+      <textarea id="governance_responsibility" name="governance_responsibility" rows="3" placeholder="Name the role/position and describe their responsibilities..." required></textarea>
+
+      <label class="required">Q31. Are there defined data quality standards that DoWH/RTA submissions must meet before PNGRF accepts them?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="governance_standards" value="yes_documented" required> Yes - documented standards exist</label>
+        <label><input type="radio" name="governance_standards" value="yes_informal"> Yes - informal/understood standards</label>
+        <label><input type="radio" name="governance_standards" value="no"> No - submissions accepted as provided</label>
+        <label><input type="radio" name="governance_standards" value="unsure"> Unsure - need to investigate</label>
+      </div>
+
+      <div id="q32-container" class="conditional-question standards-conditional">
+        <label for="governance_standards_detail">Q32. If yes, briefly describe what standards or checks are applied:</label>
+        <textarea id="governance_standards_detail" name="governance_standards_detail" rows="3" placeholder="Describe validation checks, completeness requirements, etc..."></textarea>
+      </div>
+
+      <label for="governance_error_handling" class="required">Q33. What happens when PNGRF identifies errors or inconsistencies in data received from stakeholders?</label>
+      <textarea id="governance_error_handling" name="governance_error_handling" rows="3" placeholder="Describe the process for flagging and resolving data issues..." required></textarea>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 13: PART 5B - POLICIES & AUTHORITY ==================== -->
+  <div class="form-page" data-page="13">
+    <fieldset>
+      <legend>Part 5B: Data Governance (continued)</legend>
+
+      <div class="sub-section">5B.2 Policies & Procedures</div>
+
+      <label>Q34. Does PNGRF have documented policies for the following?</label>
+      <table>
+        <tr>
+          <th>Policy Area</th>
+          <th>Yes - Documented</th>
+          <th>Yes - Informal</th>
+          <th>No</th>
+          <th>Unsure</th>
+        </tr>
+        <tr>
+          <td>Data access and security</td>
+          <td style="text-align:center"><input type="radio" name="policy_access" value="yes_documented"></td>
+          <td style="text-align:center"><input type="radio" name="policy_access" value="yes_informal"></td>
+          <td style="text-align:center"><input type="radio" name="policy_access" value="no"></td>
+          <td style="text-align:center"><input type="radio" name="policy_access" value="unsure"></td>
+        </tr>
+        <tr>
+          <td>Data retention and archival</td>
+          <td style="text-align:center"><input type="radio" name="policy_retention" value="yes_documented"></td>
+          <td style="text-align:center"><input type="radio" name="policy_retention" value="yes_informal"></td>
+          <td style="text-align:center"><input type="radio" name="policy_retention" value="no"></td>
+          <td style="text-align:center"><input type="radio" name="policy_retention" value="unsure"></td>
+        </tr>
+        <tr>
+          <td>Data quality assurance</td>
+          <td style="text-align:center"><input type="radio" name="policy_quality" value="yes_documented"></td>
+          <td style="text-align:center"><input type="radio" name="policy_quality" value="yes_informal"></td>
+          <td style="text-align:center"><input type="radio" name="policy_quality" value="no"></td>
+          <td style="text-align:center"><input type="radio" name="policy_quality" value="unsure"></td>
+        </tr>
+        <tr>
+          <td>Dispute resolution when data is contested</td>
+          <td style="text-align:center"><input type="radio" name="policy_disputes" value="yes_documented"></td>
+          <td style="text-align:center"><input type="radio" name="policy_disputes" value="yes_informal"></td>
+          <td style="text-align:center"><input type="radio" name="policy_disputes" value="no"></td>
+          <td style="text-align:center"><input type="radio" name="policy_disputes" value="unsure"></td>
+        </tr>
+        <tr>
+          <td>Backup and disaster recovery</td>
+          <td style="text-align:center"><input type="radio" name="policy_backup" value="yes_documented"></td>
+          <td style="text-align:center"><input type="radio" name="policy_backup" value="yes_informal"></td>
+          <td style="text-align:center"><input type="radio" name="policy_backup" value="no"></td>
+          <td style="text-align:center"><input type="radio" name="policy_backup" value="unsure"></td>
+        </tr>
+      </table>
+
+      <div class="sub-section">5B.3 Authority & Accountability</div>
+
+      <label for="governance_authority" class="required">Q35. Who has authority to approve or reject data used for funding allocation decisions?</label>
+      <textarea id="governance_authority" name="governance_authority" rows="3" placeholder="Identify the role/position with final authority..." required></textarea>
+
+      <label for="governance_audit">Q36. How are changes to critical data (e.g., road condition assessments, budget figures) tracked and audited?</label>
+      <textarea id="governance_audit" name="governance_audit" rows="3" placeholder="Describe audit trail, version control, or change logging processes..."></textarea>
+
+      <label for="governance_leverage">Q37. If RAMS data quality is inadequate, what leverage does PNGRF have to require improvements from DoWH?</label>
+      <textarea id="governance_leverage" name="governance_leverage" rows="3" placeholder="Describe contractual, legislative, or procedural mechanisms available..."></textarea>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 14: PART 6 - TSDIS REQUIREMENTS ==================== -->
+  <div class="form-page" data-page="14">
+    <fieldset>
+      <legend>Part 6: TSDIS Requirements & Priorities</legend>
+
+      <div class="sub-section">6.1 Feature Importance Rating</div>
+      <p>Rate each potential TSDIS feature: <strong>1 = Critical</strong>, <strong>2 = Important</strong>, <strong>3 = Nice to Have</strong></p>
+
+      <table>
+        <tr>
+          <th>Feature</th>
+          <th style="width:60px">1</th>
+          <th style="width:60px">2</th>
+          <th style="width:60px">3</th>
+        </tr>
+        <tr>
+          <td>Direct access to RAMS data without relying on DoWH extracts</td>
+          <td style="text-align:center"><input type="radio" name="feature_rams" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_rams" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_rams" value="3"></td>
+        </tr>
+        <tr>
+          <td>Real-time dashboard showing road fund revenues and expenditure</td>
+          <td style="text-align:center"><input type="radio" name="feature_dashboard" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_dashboard" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_dashboard" value="3"></td>
+        </tr>
+        <tr>
+          <td>Automated work plan submission portal for DoWH/RTA</td>
+          <td style="text-align:center"><input type="radio" name="feature_portal" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_portal" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_portal" value="3"></td>
+        </tr>
+        <tr>
+          <td>Performance monitoring dashboard for road authorities</td>
+          <td style="text-align:center"><input type="radio" name="feature_performance" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_performance" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_performance" value="3"></td>
+        </tr>
+        <tr>
+          <td>Automated report generation for Minister submissions</td>
+          <td style="text-align:center"><input type="radio" name="feature_reports" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_reports" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_reports" value="3"></td>
+        </tr>
+        <tr>
+          <td>Integration with Customs for real-time RUC/RDC revenue tracking</td>
+          <td style="text-align:center"><input type="radio" name="feature_customs" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_customs" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_customs" value="3"></td>
+        </tr>
+        <tr>
+          <td>Geographic/mapping features for road network visualization</td>
+          <td style="text-align:center"><input type="radio" name="feature_gis" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_gis" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_gis" value="3"></td>
+        </tr>
+        <tr>
+          <td>Audit trail of all funding decisions and allocations</td>
+          <td style="text-align:center"><input type="radio" name="feature_audit" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_audit" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_audit" value="3"></td>
+        </tr>
+        <tr>
+          <td>Role-based access controls</td>
+          <td style="text-align:center"><input type="radio" name="feature_rbac" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_rbac" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_rbac" value="3"></td>
+        </tr>
+        <tr>
+          <td>Data export capabilities (Excel, PDF, etc.)</td>
+          <td style="text-align:center"><input type="radio" name="feature_export" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_export" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_export" value="3"></td>
+        </tr>
+        <tr>
+          <td>Notification system for submission deadlines and approvals</td>
+          <td style="text-align:center"><input type="radio" name="feature_notifications" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_notifications" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_notifications" value="3"></td>
+        </tr>
+        <tr>
+          <td>Provincial/District road network data integration</td>
+          <td style="text-align:center"><input type="radio" name="feature_provincial" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_provincial" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_provincial" value="3"></td>
+        </tr>
+        <tr>
+          <td>Data quality validation and error flagging for submissions</td>
+          <td style="text-align:center"><input type="radio" name="feature_validation" value="1"></td>
+          <td style="text-align:center"><input type="radio" name="feature_validation" value="2"></td>
+          <td style="text-align:center"><input type="radio" name="feature_validation" value="3"></td>
+        </tr>
+      </table>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 15: PART 6 - PRIORITIES ==================== -->
+  <div class="form-page" data-page="15">
+    <fieldset>
+      <legend>Part 6: TSDIS Requirements & Priorities (continued)</legend>
+
+      <div class="sub-section">6.2 The One Thing</div>
+
+      <label for="tsdis_one_thing" class="required">Q38. If TSDIS could only fix ONE of your current problems, which one would matter most?</label>
+      <textarea id="tsdis_one_thing" name="tsdis_one_thing" rows="4" placeholder="Describe the single most impactful problem TSDIS could solve for PNGRF..." required></textarea>
+
+      <div class="sub-section">6.3 Must-Haves for Day 1</div>
+
+      <label class="required">Q39. If TSDIS launches with ONLY 3 features, which 3 would you choose?</label>
+
+      <p><strong>Feature 1 (highest priority):</strong></p>
+      <input type="text" name="musthave1" placeholder="Enter your top priority feature" required>
+
+      <p><strong>Feature 2:</strong></p>
+      <input type="text" name="musthave2" placeholder="Enter your second priority feature">
+
+      <p><strong>Feature 3:</strong></p>
+      <input type="text" name="musthave3" placeholder="Enter your third priority feature">
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 16: PART 7 - IMPLEMENTATION CONSIDERATIONS ==================== -->
+  <div class="form-page" data-page="16">
+    <fieldset>
+      <legend>Part 7: Implementation Considerations</legend>
+
+      <div class="sub-section">7.1 Training Needs</div>
+
+      <label for="training" class="required">Q40. What training would PNGRF staff need to effectively use TSDIS?</label>
+      <textarea id="training" name="training" rows="4" placeholder="Describe training topics, format preferences, and any specific concerns..." required></textarea>
+
+      <div class="sub-section">7.2 Implementation Risks</div>
+
+      <label>Q41. What could prevent successful TSDIS implementation? Rate each risk:</label>
+      <table>
+        <tr>
+          <th>Risk</th>
+          <th style="width:70px">High</th>
+          <th style="width:70px">Medium</th>
+          <th style="width:70px">Low</th>
+        </tr>
+        <tr>
+          <td>Lack of staff capacity</td>
+          <td style="text-align:center"><input type="radio" name="risk_capacity" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_capacity" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_capacity" value="low"></td>
+        </tr>
+        <tr>
+          <td>Insufficient technical skills</td>
+          <td style="text-align:center"><input type="radio" name="risk_skills" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_skills" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_skills" value="low"></td>
+        </tr>
+        <tr>
+          <td>Poor internet connectivity</td>
+          <td style="text-align:center"><input type="radio" name="risk_internet" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_internet" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_internet" value="low"></td>
+        </tr>
+        <tr>
+          <td>Resistance to change</td>
+          <td style="text-align:center"><input type="radio" name="risk_change" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_change" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_change" value="low"></td>
+        </tr>
+        <tr>
+          <td>Budget constraints</td>
+          <td style="text-align:center"><input type="radio" name="risk_budget" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_budget" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_budget" value="low"></td>
+        </tr>
+        <tr>
+          <td>Coordination challenges with DoWH</td>
+          <td style="text-align:center"><input type="radio" name="risk_dowh" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_dowh" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_dowh" value="low"></td>
+        </tr>
+        <tr>
+          <td>Coordination challenges with RTA</td>
+          <td style="text-align:center"><input type="radio" name="risk_rta" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_rta" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_rta" value="low"></td>
+        </tr>
+        <tr>
+          <td>Data ownership/governance concerns</td>
+          <td style="text-align:center"><input type="radio" name="risk_governance" value="high"></td>
+          <td style="text-align:center"><input type="radio" name="risk_governance" value="medium"></td>
+          <td style="text-align:center"><input type="radio" name="risk_governance" value="low"></td>
+        </tr>
+      </table>
+
+      <label for="risk_other">Q42. Other risks not listed above:</label>
+      <input type="text" id="risk_other" name="risk_other" placeholder="Specify any other implementation risks...">
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="button" class="btn-next" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 17: PART 7 - FINAL QUESTIONS ==================== -->
+  <div class="form-page" data-page="17">
+    <fieldset>
+      <legend>Part 7: Implementation Considerations (continued)</legend>
+
+      <div class="sub-section">7.3 Integration Considerations</div>
+
+      <label for="integration_concerns">Q43. What concerns, if any, would PNGRF have about sharing data through a central TSDIS platform?</label>
+      <textarea id="integration_concerns" name="integration_concerns" rows="4" placeholder="Describe any concerns about data security, ownership, access control, etc..."></textarea>
+
+      <div class="sub-section">7.4 Additional Comments</div>
+
+      <label for="additional_comments">Q44. Is there anything else we should know about PNGRF's needs, current processes, or constraints?</label>
+      <textarea id="additional_comments" name="additional_comments" rows="4" placeholder="Any additional information that would help us understand PNGRF's situation..."></textarea>
+    </fieldset>
+
+    <div class="nav-buttons">
+      <button type="button" class="btn-back" onclick="prevPage()">Back</button>
+      <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
+      <button type="submit" class="btn-submit">Submit Questionnaire</button>
+    </div>
+  </div>
 
 </form>
 
-<!-- 
-==================== FILLOUT.COM UI/UX IMPLEMENTATION NOTES ====================
-
-GENERAL SETTINGS:
-- Enable "Save and Continue Later" feature
-- Enable progress bar (show percentage complete)
-- Set form to "One question per page" for better mobile experience (optional)
-- Enable email confirmation to respondent using Q3 email
-- Disable "Submit another response" (one response per organization)
-
-CONDITIONAL LOGIC TO IMPLEMENT:
-1. Q11, Q12, Q13: Show only if Q10 ≠ "No current access to RAMS data"
-2. Q33: Show only if Q32 = "Yes - documented standards exist" OR "Yes - informal/understood standards"
-
-PAGE BREAKS (for multi-page form):
-- Welcome Page
-- Contact Information (Q1-5)
-- Part 1A: Organizational Overview (Q6-8)
-- Part 1B: Reporting Obligations (Q9)
-- Part 2A: RAMS Access (Q10-13)
-- Part 2B: Revenue & Work Plans (Q14-17)
-- Part 2C: Other Data Sources (Q18)
-- Part 3A: Software & Tools (Q19-20)
-- Part 3B: Infrastructure (Q21-24)
-- Part 4A: Frustrations (Q25)
-- Part 4B: Data Quality Issues (Q26-27)
-- Part 5: Stakeholder Exchange (Q28-30)
-- Part 5B.1: Data Quality Assurance (Q31-34)
-- Part 5B.2/5B.3: Policies & Authority (Q35-38)
-- Part 6.1: Feature Importance (Matrix)
-- Part 6.2/6.3: Priorities (Q39-40)
-- Part 7.1/7.2: Training & Risks (Q41-43)
-- Part 7.3/7.4: Integration & Final (Q44-45)
-- Thank You Page
-
-FIELD TYPES SUMMARY:
-- SHORT TEXT: Q1, Q2, Q4, Q43, Q40 (x3)
-- EMAIL: Q3
-- PHONE: Q4
-- DATE: Q5
-- LONG TEXT: Q6, Q7, Q13, Q14, Q17, Q21, Q23, Q25 (x3), Q27, Q28 (x15), Q29, Q30, Q31, Q33, Q34, Q36, Q37, Q38, Q39, Q41, Q44, Q45
-- NUMBER: Q22
-- SINGLE SELECT (Radio): Q10, Q24, Q32
-- MULTI-SELECT (Checkbox): Q11, Q16, Q18, Q19, Q20
-- DROPDOWN: Q9 (frequency x4), Q12, Q15
-- RANKING: Q8
-- MATRIX: Q9 (table), Q26, Q35, Feature ratings, Q42
-- TABLE INPUT: Q28
-
-==================== END NOTES ====================
--->
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+// Page navigation state
+let currentPage = 0;
+const totalPages = 18;
+const STORAGE_KEY = 'tsdis_questionnaire_data';
 
-  // Q10 conditional logic - show/hide Q11, Q12, Q13 based on RAMS access
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  // Check for saved data
+  loadSavedData();
+
+  // Update progress bar
+  updateProgress();
+
+  // Initialize conditional logic
+  initConditionalLogic();
+
+  // Initialize "Other" field reveal logic
+  initOtherFieldLogic();
+});
+
+// Navigate to next page
+function nextPage() {
+  const currentPageEl = document.querySelector('.form-page[data-page="' + currentPage + '"]');
+
+  // Validate current page (except welcome page)
+  if (currentPage > 0 && !validatePage(currentPageEl)) {
+    return;
+  }
+
+  if (currentPage < totalPages - 1) {
+    currentPageEl.classList.remove('active');
+    currentPage++;
+    document.querySelector('.form-page[data-page="' + currentPage + '"]').classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+
+    // Auto-save on page change
+    saveToLocalStorage();
+  }
+}
+
+// Navigate to previous page
+function prevPage() {
+  if (currentPage > 0) {
+    document.querySelector('.form-page[data-page="' + currentPage + '"]').classList.remove('active');
+    currentPage--;
+    document.querySelector('.form-page[data-page="' + currentPage + '"]').classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+  }
+}
+
+// Validate current page
+function validatePage(pageEl) {
+  const requiredFields = pageEl.querySelectorAll('[required]');
+  let isValid = true;
+
+  requiredFields.forEach(function(field) {
+    // For radio buttons, check if any in the group is selected
+    if (field.type === 'radio') {
+      const radioGroup = pageEl.querySelectorAll('input[name="' + field.name + '"]');
+      const anyChecked = Array.from(radioGroup).some(r => r.checked);
+      if (!anyChecked) {
+        isValid = false;
+        // Highlight the radio group
+        field.closest('.radio-group').style.border = '2px solid #e74c3c';
+        field.closest('.radio-group').style.padding = '10px';
+        field.closest('.radio-group').style.borderRadius = '5px';
+      } else {
+        field.closest('.radio-group').style.border = 'none';
+        field.closest('.radio-group').style.padding = '0';
+      }
+    } else {
+      if (!field.value.trim()) {
+        isValid = false;
+        field.style.borderColor = '#e74c3c';
+      } else {
+        field.style.borderColor = '#ccc';
+      }
+    }
+  });
+
+  if (!isValid) {
+    alert('Please fill in all required fields before continuing.');
+  }
+
+  return isValid;
+}
+
+// Update progress bar
+function updateProgress() {
+  const progress = (currentPage / (totalPages - 1)) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+  document.getElementById('progressText').textContent = 'Page ' + (currentPage + 1) + ' of ' + totalPages;
+}
+
+// Save progress to localStorage
+function saveProgress() {
+  saveToLocalStorage();
+  showSaveNotification();
+}
+
+function saveToLocalStorage() {
+  const form = document.getElementById('mainForm');
+  const formData = new FormData(form);
+  const data = {
+    currentPage: currentPage,
+    timestamp: new Date().toISOString(),
+    fields: {}
+  };
+
+  // Save all form fields
+  for (let [key, value] of formData.entries()) {
+    if (data.fields[key]) {
+      // Handle multiple values (checkboxes)
+      if (Array.isArray(data.fields[key])) {
+        data.fields[key].push(value);
+      } else {
+        data.fields[key] = [data.fields[key], value];
+      }
+    } else {
+      data.fields[key] = value;
+    }
+  }
+
+  // Also save checkbox states explicitly
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+    if (cb.checked && !data.fields[cb.name]) {
+      data.fields[cb.name] = cb.value;
+    }
+  });
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function showSaveNotification() {
+  const notification = document.getElementById('saveNotification');
+  notification.classList.add('show');
+  setTimeout(function() {
+    notification.classList.remove('show');
+  }, 3000);
+}
+
+// Load saved data from localStorage
+function loadSavedData() {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+
+  if (savedData) {
+    const data = JSON.parse(savedData);
+
+    // Show the "Welcome back" notice
+    document.getElementById('savedDataNotice').classList.add('show');
+
+    // Restore current page
+    if (data.currentPage > 0) {
+      document.querySelector('.form-page[data-page="0"]').classList.remove('active');
+      currentPage = data.currentPage;
+      document.querySelector('.form-page[data-page="' + currentPage + '"]').classList.add('active');
+    }
+
+    // Restore form fields
+    for (let [key, value] of Object.entries(data.fields)) {
+      const elements = document.querySelectorAll('[name="' + key + '"]');
+
+      elements.forEach(function(el) {
+        if (el.type === 'checkbox') {
+          // Handle checkboxes
+          if (Array.isArray(value)) {
+            el.checked = value.includes(el.value);
+          } else {
+            el.checked = el.value === value;
+          }
+        } else if (el.type === 'radio') {
+          // Handle radio buttons
+          el.checked = el.value === value;
+        } else {
+          // Handle text inputs, textareas, selects
+          el.value = value;
+        }
+      });
+    }
+
+    // Re-initialize conditional logic after loading data
+    setTimeout(function() {
+      initConditionalLogic();
+      initOtherFieldLogic();
+    }, 100);
+  }
+}
+
+// Clear saved data
+function clearSavedData() {
+  localStorage.removeItem(STORAGE_KEY);
+  document.getElementById('savedDataNotice').classList.remove('show');
+
+  // Reset form
+  document.getElementById('mainForm').reset();
+
+  // Go back to first page
+  document.querySelector('.form-page.active').classList.remove('active');
+  currentPage = 0;
+  document.querySelector('.form-page[data-page="0"]').classList.add('active');
+  updateProgress();
+}
+
+// Initialize conditional logic for Q9->Q10,Q11,Q12 and Q31->Q32
+function initConditionalLogic() {
+  // Q9 conditional logic - show/hide Q10, Q11, Q12 based on RAMS access
   const ramsAccessRadios = document.querySelectorAll('input[name="rams_access"]');
   const ramsConditionalQuestions = document.querySelectorAll('.rams-conditional');
 
@@ -1022,10 +1224,9 @@ document.addEventListener('DOMContentLoaded', function() {
     radio.addEventListener('change', updateRamsConditional);
   });
 
-  // Initialize on page load
   updateRamsConditional();
 
-  // Q32 conditional logic - show/hide Q33 based on governance standards
+  // Q31 conditional logic - show/hide Q32 based on governance standards
   const standardsRadios = document.querySelectorAll('input[name="governance_standards"]');
   const standardsConditional = document.querySelector('.standards-conditional');
 
@@ -1047,10 +1248,11 @@ document.addEventListener('DOMContentLoaded', function() {
     radio.addEventListener('change', updateStandardsConditional);
   });
 
-  // Initialize on page load
   updateStandardsConditional();
+}
 
-  // "Other" text field reveal logic for checkboxes and radio buttons
+// Initialize "Other" text field reveal logic
+function initOtherFieldLogic() {
   const revealTriggers = document.querySelectorAll('[data-reveals]');
 
   revealTriggers.forEach(function(trigger) {
@@ -1061,20 +1263,21 @@ document.addEventListener('DOMContentLoaded', function() {
       function updateVisibility() {
         if (trigger.checked) {
           targetInput.classList.add('visible');
-          targetInput.focus();
         } else {
           targetInput.classList.remove('visible');
-          targetInput.value = ''; // Clear the value when hidden
+          targetInput.value = '';
         }
       }
 
       trigger.addEventListener('change', updateVisibility);
-
-      // Initialize on page load
       updateVisibility();
     }
   });
+}
 
+// Clear saved data on successful form submission
+document.getElementById('mainForm').addEventListener('submit', function() {
+  localStorage.removeItem(STORAGE_KEY);
 });
 </script>
 
