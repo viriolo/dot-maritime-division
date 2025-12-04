@@ -13,9 +13,16 @@
     legend { background: #1F4E79; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; font-size: 16px; }
     .sub-section { color: #2E75B6; font-size: 14px; font-weight: bold; margin: 20px 0 10px 0; border-bottom: 2px solid #2E75B6; padding-bottom: 5px; }
     label { display: block; margin-top: 15px; font-weight: bold; color: #333; }
-    .helper-text { font-size: 12px; color: #666; font-style: italic; margin: 3px 0 8px 0; }
-    .field-type { font-size: 11px; color: #C45911; margin: 2px 0; }
-    .conditional { font-size: 11px; color: #2E7D32; font-weight: bold; margin: 5px 0; }
+    /* Hide instruction elements from users */
+    .helper-text, .field-type, .conditional { display: none; }
+    /* Conditional question containers */
+    .conditional-question { display: none; }
+    .conditional-question.visible { display: block; }
+    /* Other text input styling */
+    .other-text-input { display: none; width: auto; margin-left: 10px; flex: 1; }
+    .other-text-input.visible { display: inline-block; }
+    .radio-group label, .checkbox-group label { flex-wrap: wrap; }
+    .radio-group label .other-text-input, .checkbox-group label .other-text-input { margin-top: 5px; width: 100%; margin-left: 28px; }
     input[type="text"], input[type="email"], input[type="tel"], input[type="number"], input[type="date"] {
       width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; margin-top: 5px;
     }
@@ -268,39 +275,45 @@
       <label><input type="radio" name="rams_access" value="extracts"> Receive data extracts/reports from DoWH</label>
       <label><input type="radio" name="rams_access" value="request"> Request specific data as needed</label>
       <label><input type="radio" name="rams_access" value="no_access"> No current access to RAMS data</label>
-      <label><input type="radio" name="rams_access" value="other"> Other: <input type="text" name="rams_access_other" placeholder="Please specify"></label>
+      <label><input type="radio" name="rams_access" value="other" data-reveals="rams_access_other"> Other: <input type="text" name="rams_access_other" class="other-text-input" placeholder="Please specify"></label>
     </div>
 
-    <label>Q11. If you receive RAMS data, in what format?</label>
-    <span class="field-type">[MULTI-SELECT (Checkboxes)]</span>
-    <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="rams_format" value="excel"> Excel spreadsheets</label>
-      <label><input type="checkbox" name="rams_format" value="pdf"> PDF reports</label>
-      <label><input type="checkbox" name="rams_format" value="database"> Database exports</label>
-      <label><input type="checkbox" name="rams_format" value="dashboard"> Online dashboard access</label>
-      <label><input type="checkbox" name="rams_format" value="other"> Other: <input type="text" name="rams_format_other" placeholder="Please specify"></label>
+    <div id="q11-container" class="conditional-question rams-conditional">
+      <label>Q11. If you receive RAMS data, in what format?</label>
+      <span class="field-type">[MULTI-SELECT (Checkboxes)]</span>
+      <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="rams_format" value="excel"> Excel spreadsheets</label>
+        <label><input type="checkbox" name="rams_format" value="pdf"> PDF reports</label>
+        <label><input type="checkbox" name="rams_format" value="database"> Database exports</label>
+        <label><input type="checkbox" name="rams_format" value="dashboard"> Online dashboard access</label>
+        <label><input type="checkbox" name="rams_format" value="other" data-reveals="rams_format_other"> Other: <input type="text" name="rams_format_other" class="other-text-input" placeholder="Please specify"></label>
+      </div>
     </div>
 
-    <label>Q12. How frequently do you receive/access RAMS data?</label>
-    <span class="field-type">[DROPDOWN - Required]</span>
-    <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
-    <select name="rams_frequency">
-      <option value="">Select frequency...</option>
-      <option value="daily">Daily</option>
-      <option value="weekly">Weekly</option>
-      <option value="fortnightly">Fortnightly</option>
-      <option value="monthly">Monthly</option>
-      <option value="quarterly">Quarterly</option>
-      <option value="annually">Annually</option>
-      <option value="adhoc">As needed / Ad-hoc</option>
-      <option value="na">N/A</option>
-    </select>
+    <div id="q12-container" class="conditional-question rams-conditional">
+      <label>Q12. How frequently do you receive/access RAMS data?</label>
+      <span class="field-type">[DROPDOWN - Required]</span>
+      <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
+      <select name="rams_frequency">
+        <option value="">Select frequency...</option>
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="fortnightly">Fortnightly</option>
+        <option value="monthly">Monthly</option>
+        <option value="quarterly">Quarterly</option>
+        <option value="annually">Annually</option>
+        <option value="adhoc">As needed / Ad-hoc</option>
+        <option value="na">N/A</option>
+      </select>
+    </div>
 
-    <label>Q13. How would you rate the quality and timeliness of RAMS data you receive?</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
-    <textarea name="rams_quality" rows="3" placeholder="Describe any quality issues, delays, or concerns..."></textarea>
+    <div id="q13-container" class="conditional-question rams-conditional">
+      <label>Q13. How would you rate the quality and timeliness of RAMS data you receive?</label>
+      <span class="field-type">[LONG TEXT]</span>
+      <span class="conditional">⚡ CONDITIONAL: If Q10 = 'No current access to RAMS data' → Skip this question</span>
+      <textarea name="rams_quality" rows="3" placeholder="Describe any quality issues, delays, or concerns..."></textarea>
+    </div>
   </fieldset>
 
   <!-- ==================== PART 2B: REVENUE DATA & WORK PLANS ==================== -->
@@ -339,7 +352,7 @@
       <label><input type="checkbox" name="workplan_method" value="physical"> Physical documents (hard copy)</label>
       <label><input type="checkbox" name="workplan_method" value="portal"> Online portal/system</label>
       <label><input type="checkbox" name="workplan_method" value="meetings"> Presented in meetings</label>
-      <label><input type="checkbox" name="workplan_method" value="other"> Other: <input type="text" name="workplan_method_other" placeholder="Please specify"></label>
+      <label><input type="checkbox" name="workplan_method" value="other" data-reveals="workplan_method_other"> Other: <input type="text" name="workplan_method_other" class="other-text-input" placeholder="Please specify"></label>
     </div>
 
     <label for="workplan_requirements" class="required">Q17. What information must work plan submissions include for PNGRF approval?</label>
@@ -364,7 +377,7 @@
       <label><input type="checkbox" name="other_data" value="rta_enforcement"> RTA enforcement data (axle loads, HHSP)</label>
       <label><input type="checkbox" name="other_data" value="treasury"> Treasury/Finance data</label>
       <label><input type="checkbox" name="other_data" value="planning"> National Planning data</label>
-      <label><input type="checkbox" name="other_data" value="other"> Other: <input type="text" name="other_data_other" placeholder="Please specify"></label>
+      <label><input type="checkbox" name="other_data" value="other" data-reveals="other_data_other"> Other: <input type="text" name="other_data_other" class="other-text-input" placeholder="Please specify"></label>
     </div>
   </fieldset>
 
@@ -383,11 +396,11 @@
     <div class="checkbox-group">
       <label><input type="checkbox" name="software" value="excel"> Microsoft Excel</label>
       <label><input type="checkbox" name="software" value="access"> Microsoft Access</label>
-      <label><input type="checkbox" name="software" value="accounting"> Accounting software: <input type="text" name="accounting_software" placeholder="Specify name"></label>
-      <label><input type="checkbox" name="software" value="project"> Project management software: <input type="text" name="project_software" placeholder="Specify name"></label>
+      <label><input type="checkbox" name="software" value="accounting" data-reveals="accounting_software"> Accounting software: <input type="text" name="accounting_software" class="other-text-input" placeholder="Specify name"></label>
+      <label><input type="checkbox" name="software" value="project" data-reveals="project_software"> Project management software: <input type="text" name="project_software" class="other-text-input" placeholder="Specify name"></label>
       <label><input type="checkbox" name="software" value="bi"> Business intelligence tools (Power BI, Tableau, etc.)</label>
-      <label><input type="checkbox" name="software" value="custom"> Custom database/system: <input type="text" name="custom_system" placeholder="Specify name"></label>
-      <label><input type="checkbox" name="software" value="other"> Other: <input type="text" name="software_other" placeholder="Please specify"></label>
+      <label><input type="checkbox" name="software" value="custom" data-reveals="custom_system"> Custom database/system: <input type="text" name="custom_system" class="other-text-input" placeholder="Specify name"></label>
+      <label><input type="checkbox" name="software" value="other" data-reveals="software_other"> Other: <input type="text" name="software_other" class="other-text-input" placeholder="Please specify"></label>
     </div>
 
     <div class="sub-section">3.2 Data Storage</div>
@@ -398,7 +411,7 @@
       <label><input type="checkbox" name="storage" value="laptops"> Individual staff computers/laptops</label>
       <label><input type="checkbox" name="storage" value="shared_drives"> Network shared drives</label>
       <label><input type="checkbox" name="storage" value="server"> PNGRF server/database</label>
-      <label><input type="checkbox" name="storage" value="cloud"> Cloud storage: <input type="text" name="cloud_provider" placeholder="Specify provider"></label>
+      <label><input type="checkbox" name="storage" value="cloud" data-reveals="cloud_provider"> Cloud storage: <input type="text" name="cloud_provider" class="other-text-input" placeholder="Specify provider"></label>
       <label><input type="checkbox" name="storage" value="physical"> Physical files/filing cabinets</label>
     </div>
   </fieldset>
@@ -601,10 +614,12 @@
       <label><input type="radio" name="governance_standards" value="unsure"> Unsure - need to investigate</label>
     </div>
 
-    <label for="governance_standards_detail">Q33. If yes, briefly describe what standards or checks are applied:</label>
-    <span class="field-type">[LONG TEXT]</span>
-    <span class="conditional">⚡ CONDITIONAL: Show only if Q32 = 'Yes - documented...' OR 'Yes - informal...'</span>
-    <textarea id="governance_standards_detail" name="governance_standards_detail" rows="3" placeholder="Describe validation checks, completeness requirements, etc..."></textarea>
+    <div id="q33-container" class="conditional-question standards-conditional">
+      <label for="governance_standards_detail">Q33. If yes, briefly describe what standards or checks are applied:</label>
+      <span class="field-type">[LONG TEXT]</span>
+      <span class="conditional">⚡ CONDITIONAL: Show only if Q32 = 'Yes - documented...' OR 'Yes - informal...'</span>
+      <textarea id="governance_standards_detail" name="governance_standards_detail" rows="3" placeholder="Describe validation checks, completeness requirements, etc..."></textarea>
+    </div>
 
     <label for="governance_error_handling" class="required">Q34. What happens when PNGRF identifies errors or inconsistencies in data received from stakeholders?</label>
     <span class="field-type">[LONG TEXT - Required]</span>
@@ -987,6 +1002,93 @@ FIELD TYPES SUMMARY:
 
 ==================== END NOTES ====================
 -->
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Auto-populate date field with current date
+  const dateField = document.getElementById('date_completed');
+  if (dateField && !dateField.value) {
+    const today = new Date().toISOString().split('T')[0];
+    dateField.value = today;
+  }
+
+  // Q10 conditional logic - show/hide Q11, Q12, Q13 based on RAMS access
+  const ramsAccessRadios = document.querySelectorAll('input[name="rams_access"]');
+  const ramsConditionalQuestions = document.querySelectorAll('.rams-conditional');
+
+  function updateRamsConditional() {
+    const selectedValue = document.querySelector('input[name="rams_access"]:checked');
+    const showQuestions = selectedValue && selectedValue.value !== 'no_access';
+
+    ramsConditionalQuestions.forEach(function(container) {
+      if (showQuestions) {
+        container.classList.add('visible');
+      } else {
+        container.classList.remove('visible');
+      }
+    });
+  }
+
+  ramsAccessRadios.forEach(function(radio) {
+    radio.addEventListener('change', updateRamsConditional);
+  });
+
+  // Initialize on page load
+  updateRamsConditional();
+
+  // Q32 conditional logic - show/hide Q33 based on governance standards
+  const standardsRadios = document.querySelectorAll('input[name="governance_standards"]');
+  const standardsConditional = document.querySelector('.standards-conditional');
+
+  function updateStandardsConditional() {
+    const selectedValue = document.querySelector('input[name="governance_standards"]:checked');
+    const showQuestion = selectedValue &&
+      (selectedValue.value === 'yes_documented' || selectedValue.value === 'yes_informal');
+
+    if (standardsConditional) {
+      if (showQuestion) {
+        standardsConditional.classList.add('visible');
+      } else {
+        standardsConditional.classList.remove('visible');
+      }
+    }
+  }
+
+  standardsRadios.forEach(function(radio) {
+    radio.addEventListener('change', updateStandardsConditional);
+  });
+
+  // Initialize on page load
+  updateStandardsConditional();
+
+  // "Other" text field reveal logic for checkboxes and radio buttons
+  const revealTriggers = document.querySelectorAll('[data-reveals]');
+
+  revealTriggers.forEach(function(trigger) {
+    const targetName = trigger.getAttribute('data-reveals');
+    const targetInput = document.querySelector('input[name="' + targetName + '"]');
+
+    if (targetInput) {
+      function updateVisibility() {
+        if (trigger.checked) {
+          targetInput.classList.add('visible');
+          targetInput.focus();
+        } else {
+          targetInput.classList.remove('visible');
+          targetInput.value = ''; // Clear the value when hidden
+        }
+      }
+
+      trigger.addEventListener('change', updateVisibility);
+
+      // Initialize on page load
+      updateVisibility();
+    }
+  });
+
+});
+</script>
 
 </body>
 </html>
