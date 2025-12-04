@@ -476,13 +476,10 @@
       <label for="internet">Q20. Internet connectivity - Speed and Reliability</label>
       <textarea id="internet" name="internet" rows="2" placeholder="e.g., Fibre 10Mbps, generally reliable with occasional outages"></textarea>
 
-      <label for="computers">Q21. How many computers/laptops does PNGRF have?</label>
-      <input type="number" id="computers" name="computers" placeholder="e.g., 15" min="0">
-
-      <label for="it_support">Q22. What IT support is available to PNGRF?</label>
+      <label for="it_support">Q21. What IT support is available to PNGRF?</label>
       <textarea id="it_support" name="it_support" rows="2" placeholder="e.g., In-house IT officer, outsourced support, government ICT..."></textarea>
 
-      <label class="required">Q23. How would you rate staff technical skill level?</label>
+      <label class="required">Q22. How would you rate staff technical skill level?</label>
       <div class="radio-group">
         <label><input type="radio" name="skill_level" value="high" required> High - Staff comfortable with databases and advanced Excel</label>
         <label><input type="radio" name="skill_level" value="medium"> Medium - Staff comfortable with basic Excel and email</label>
@@ -989,7 +986,7 @@
     <div class="nav-buttons">
       <button type="button" class="btn-back" onclick="prevPage()">Back</button>
       <button type="button" class="btn-save" onclick="saveProgress()">Save Progress</button>
-      <button type="submit" class="btn-submit">Submit Questionnaire</button>
+      <button type="button" class="btn-submit" onclick="submitForm()">Submit Questionnaire</button>
     </div>
   </div>
 
@@ -1275,10 +1272,56 @@ function initOtherFieldLogic() {
   });
 }
 
-// Clear saved data on successful form submission
-document.getElementById('mainForm').addEventListener('submit', function() {
+// Submit form with validation across all pages
+function submitForm() {
+  const form = document.getElementById('mainForm');
+  let allValid = true;
+  let firstInvalidPage = -1;
+
+  // Validate all pages
+  for (let i = 1; i < totalPages; i++) {
+    const pageEl = document.querySelector('.form-page[data-page="' + i + '"]');
+    if (pageEl) {
+      const requiredFields = pageEl.querySelectorAll('[required]');
+
+      requiredFields.forEach(function(field) {
+        if (field.type === 'radio') {
+          const radioGroup = document.querySelectorAll('input[name="' + field.name + '"]');
+          const anyChecked = Array.from(radioGroup).some(r => r.checked);
+          if (!anyChecked) {
+            allValid = false;
+            if (firstInvalidPage === -1) firstInvalidPage = i;
+          }
+        } else {
+          if (!field.value.trim()) {
+            allValid = false;
+            if (firstInvalidPage === -1) firstInvalidPage = i;
+          }
+        }
+      });
+    }
+  }
+
+  if (!allValid) {
+    // Navigate to the first page with errors
+    document.querySelector('.form-page.active').classList.remove('active');
+    currentPage = firstInvalidPage;
+    document.querySelector('.form-page[data-page="' + currentPage + '"]').classList.add('active');
+    updateProgress();
+    window.scrollTo(0, 0);
+
+    // Trigger validation display on that page
+    const pageEl = document.querySelector('.form-page[data-page="' + currentPage + '"]');
+    validatePage(pageEl);
+
+    alert('Please complete all required fields. You have been taken to the first page with missing information.');
+    return;
+  }
+
+  // All valid - clear saved data and submit
   localStorage.removeItem(STORAGE_KEY);
-});
+  form.submit();
+}
 </script>
 
 </body>
