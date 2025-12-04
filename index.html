@@ -96,7 +96,13 @@
 </div>
 <div class="progress-text" id="progressText">Page 1 of 18</div>
 
-<form name="tsdis-questionnaire" method="POST" data-netlify="true" action="/success.html" id="mainForm">
+<form name="tsdis-questionnaire" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/success.html" id="mainForm">
+
+  <!-- Honeypot field for spam protection - hidden from users -->
+  <div style="display: none;">
+    <label>Don't fill this out if you're human:</label>
+    <input name="bot-field">
+  </div>
 
   <!-- ==================== PAGE 0: WELCOME PAGE ==================== -->
   <div class="form-page active" data-page="0">
