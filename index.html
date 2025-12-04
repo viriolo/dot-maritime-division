@@ -115,11 +115,6 @@
     <label for="phone">Q4. Phone Number</label>
     <span class="field-type">[PHONE NUMBER - Optional]</span>
     <input type="tel" id="phone" name="phone" placeholder="e.g., +675 xxx xxxx">
-
-    <label for="date_completed">Q5. Date Completed</label>
-    <span class="field-type">[DATE PICKER - Auto-populate with current date]</span>
-    <span class="helper-text">Set default value to today's date</span>
-    <input type="date" id="date_completed" name="date_completed">
   </fieldset>
 
   <!-- ==================== PART 1A: ORGANIZATIONAL OVERVIEW ==================== -->
@@ -1005,13 +1000,6 @@ FIELD TYPES SUMMARY:
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
-  // Auto-populate date field with current date
-  const dateField = document.getElementById('date_completed');
-  if (dateField && !dateField.value) {
-    const today = new Date().toISOString().split('T')[0];
-    dateField.value = today;
-  }
 
   // Q10 conditional logic - show/hide Q11, Q12, Q13 based on RAMS access
   const ramsAccessRadios = document.querySelectorAll('input[name="rams_access"]');
